@@ -1,0 +1,489 @@
+
+
+Opportunity Fields :
+https://help.salesforce.com/s/articleView?id=sf.opp_fields.htm&type=5
+
+GDP
+
+Gross domestic product (GDP) is the total monetary or market value of all the finished goods and services produced within a country’s borders in a specific time period.
+(scorecard of a given country’s economic health.)
+
+Method calcul : 
+Though GDP is typically calculated on an annual basis, it is sometimes calculated on a quarterly basis as well
+real GDP  is a better method for expressing long-term national economic performance since it uses constant dollars. (enleve le paramètre de fluctuation du cours de l'argent qui  pourrait fausser resultat )
+
+
+Nominal GDP is an assessment of economic production in an economy that includes current prices in its calculation. In other words, it doesn’t strip out inflation or the pace of rising prices, which can inflate the growth figure.
+Nominal GDP is used when comparing different quarters of output within the same year. When comparing the GDP of two or more years, real GDP is used.
+OPPORTUNITE :
+
+Upsell :
+https://www.automationninjas.com/blog/upsell-cross-sell-and-downsell/
+
+Upselling is a strategy used to increase both customer lifetime value (the amount of money a customer spends with you over their lifetime) and average order value (the amount of money a customer spends on one purchase). 
+
+Upsells are an opportunity for people to upgrade the purchase they are currently making.
+Cross-sells are related or complementary products that might go well with their purchase. 
+Downsells are for the people that have rejected an offer and you want to grab them with a smaller product/ service that might suit them better.
+
+Renewal Due :
+Je suppose que c'est l'argent généré par le renouveau de contract dans une certaine periode de temps.
+
+Due Date :
+Début de l'offre 
+
+Close Date :
+Date ou l'offre a vue sont statut updaté en pas finalisé ou finalisé ?
+
+Target Amount :
+But du chiffre d'affaire 
+
+Forcast Amount :
+prevision du chiffre d'affaire obtenu (expected) apres avoir retranché les charges de la target ammount 
+
+Change mount :
+difference entre forecast et target 
+
+Stage :
+Etat : ouvert (contract non signé) , fermé ( dossier clos : finalisé ou non finalisé) ; autre voir lien
+
+Likehood score :
+Probabilité d'emporter l'affaire , parfois dépendante exclusivement du niveau d'implication du client dans les contracts déjà signé ect  :https://garysmithpartnership.com/opportunity-probability/
+
+https://go.sellsy.com/blog/crm-quest-ce-quune-opportunite-et-comment-lutiliser
+
+
+Gross renewal :
+Gross renewal rate measures the amount of renewable revenue that has been renewed during a given period without including benefits from expansion revenue or price increases. 
+
+Net renewal :
+The net renewal rate is the percentage of renewable revenue that has been renewed while taking expansion revenue into account.
+
+Forecast :
+
+Won :
+Nombre d'entreprise et chiffre d'affaire cumulé de leur contract 
+
+Churn :
+Nombre d'entreprise et perte d'affaire cumulé de leur contract ?
+
+Upsell:
+Nombe d'entreprise et chiffre d'affaire cumulé de leur upgrade 
+
+
+
+
+
+
+
+
+
+
+Consumer Goods :
+Also called final goods, consumer goods are the end result of production and manufacturing. Clothing, food products, and dishwashers are examples of common consumer goods.
+https://www.investopedia.com/terms/c/consumer-goods.asp
+
+
+
+Convenience goods are those that are regularly consumed and are readily available for purchase. They are often nondurable goods and low-priced items sold by wholesalers and retailers.  ex: milk
+
+
+Shopping goods are those items bought less frequently, are durable, and are commonly more expensive than convenience goods. ex: television
+
+Specialty consumer goods are rare and often considered luxury purchases.
+
+Unsought consumer goods are readily available but not often sought by the consumer. Life asurance
+
+Fast-moving consumer goods include nondurable goods like food and drinks that move rapidly through the supply chain from producers to distributors and retailers to consumers. 
+
+Capital goods, such as buildings, machinery, equipment, vehicles, and tools, are physical assets that a company uses in the production process to manufacture products and services that consumers will later use. 
+Capital goods are not finished goods but are used to make finished goods. Consumer goods are those used by consumers and have no future productive use.
+
+
+Due Date (invoice):
+An invoice due date is when the seller expects the buyer to make the payment for goods sold or services provided. 
+Mentioning the invoice due date is essential as it intimates the buyer about the maximum time he has to make the payment for his purchase. The seller could levy penalties or interest.
+
+. Consumer goods can be classified as durable, non-durable, or services. Marketing of consumer goods depends upon the use, price, and features of the item.
+
+
+Sale:
+A sale is a transaction between two or more parties that involves the exchange of tangible or intangible goods, services, or assets for money.
+Regardless of the context, a sale is essentially a contract between a seller of a particular good or service and a buyer who is willing to pay for that good or service.
+A sale occurs when a seller of goods or services transfers ownership of, and title to, a good or service to a buyer in exchange for a specific amount of money or other specified assets. 
+
+Types of Sales:
+
+The sale of goods and services  within a retail market
+
+Sales of investment products by financial services 
+
+Sales can also be transacted between businesses. For example, a raw materials provider might sell available materials to a business that uses those raw materials to produce consumer goods.
+
+
+Revenue:
+Revenue is the money generated from normal business operations, also known as sales on the income statement.
+Accrual accounting will include sales made on credit as revenue for goods or services delivered to the customer.   et cash accounting  on the other hand, will only count sales as revenue when payment is received Ok deja vue
+
+Revenue can be divided into operating revenue—sales from a company's core business—and non-operating revenue which is derived from secondary sources.
+As these non-operating revenue sources are often unpredictable or nonrecurring, they can be referred to as one-time events or gains. 
+For example, proceeds from the sale of an asset, a windfall from investments, or money awarded through litigation are non-operating revenue.
+
+Income/profit usually incorporates other facets of a business. For example, net income or incorporate expenses such as cost of goods sold, operating expenses, taxes, and interest expenses. 
+
+voir lien https://www.investopedia.com/terms/r/revenue.asp     pour plus  ou pdf 
+
+Income Statement:
+Also known as the profit and loss (P&L) statement 
+
+https://www.investopedia.com/terms/i/incomestatement.asp long 
+
+
+Inventory:
+The term inventory refers to the raw materials used in production as well as the goods produced that are available for sale. 
+A company's inventory represents one of the most important assets it has because the turnover of inventory represents one of the primary sources of revenue generation and subsequent earnings for the company's shareholders.
+
+
+There are three types of inventory, including raw materials, work-in-progress, and finished goods.
+
+ It is categorized as a current asset on a company's balance sheet.
+
+WIP
+The term work-in-progress (WIP) is a production and supply-chain management term describing partially finished goods awaiting completion. WIP refers to the raw materials, labor, and overhead costs incurred for products that are at various stages of the production process. 
+
+
+Overhead:
+Overhead refers to the ongoing business expenses not directly attributed to creating a product or service. 
+https://www.investopedia.com/terms/o/overhead.asp
+
+
+Fixed Overhead ex :rent, depreciation, insurance premiums, office personnel salaries. and the cost of licenses.
+
+Variable Overhead office equipment, shipping and mailing costs, marketing, legal expenses, and maintenance.
+
+Semi-Variable Overhead
+
+
+Profit and Loss (P&L):
+Profit and loss (P&L) statement refers to a financial statement that summarizes the revenues, costs, and expenses incurred during a specified period, usually a quarter or fiscal year.
+
+
+Accrual Accounting
+In other words, the revenue earned and expenses incurred are entered into the company's journal regardless of when money exchanges hands. Accrual accounting is usually compared to cash basis of accounting, which records revenue when the goods and services are actually paid for.
+
+Cash Accounting
+Accounting method where 1) payment receipts are recorded during the period in which they are received, and  2) expenses are recorded in the period in which they are actually paid
+
+
+Gross Profit  :
+
+Gross profit is the profit a company makes after deducting the costs associated with making and selling its products, or the costs associated with providing its services.
+As generally defined, gross profit does not include fixed costs (that is, costs that must be paid regardless of the level of output). Fixed costs include rent, advertising, insurance, salaries for employees not directly involved in the production, and office supplies.
+
+Gross Profit Margin ( GPM)
+
+This metric is useful for comparing a company's production efficiency over time. Simply comparing gross profits from year to year or quarter to quarter can be misleading, since gross profits can rise while gross margins fall
+
+Gross profit is useful to determine how well a company is managing its production, labor costs, raw material sourcing, and spoilage due to manufacturing. Net income is useful to determine overall whether a company's enterprise-wide operation makes money when factoring in administrative costs, rent, insurance, and taxes
+
+https://www.investopedia.com/terms/g/grossprofit.asp voir "how to ..."
+
+Sales returns:
+occurs when a buyer sends a product back to a seller for a partial or full refund. 
+
+
+Accounts Receivable (AR) :
+Accounts receivable refer to the outstanding invoices that a company has or the money that clients owe the company.
+Accounts receivable, or receivables, represent a line of credit extended by a company and normally have terms that require payments due within a relatively short period.
+There is a legal obligation for the customer to pay the debt. They are considered a liquid asset, because they can be used as collateral to secure a loan to help meet short-term obligations.  (current assets)
+When a company owes debts to its suppliers or other parties, these are accounts payable
+
+Allowance:
+retroactive discount a customer receives when they contact a company about a minor but noticeable defect with its product
+
+Allowance for Doubtful Accounts:
+An allowance for doubtful accounts is a contra account that nets against the total receivables presented on the balance sheet to reflect only the amounts expected to be paid. 
+
+The allowance for doubtful accounts estimates the percentage of accounts receivable that are expected to be uncollectible. 
+However, the actual payment behavior of customers may differ substantially from the estimate.
+
+voir pdf 
+
+
+
+Net Profit Margin:
+
+The net profit margin, or simply net margin, measures how much net income or profit is generated as a percentage of revenue. 
+
+Net Income :
+Useful number for investors to assess how much revenue exceeds the expenses of an organization.
+https://www.investopedia.com/terms/n/netincome.asp
+
+
+
+Operating Profit:
+A company's operating profit is its total earnings from its core business functions for a given period, excluding the deduction of interest and taxes .
+
+
+Operating Margin :
+
+The operating margin measures how much profit a company makes on a dollar of sales after paying for variable costs of production.
+It is calculated by dividing a company’s operating income by its net sales. 
+A company’s operating margin, sometimes referred to as return on sales (ROS),
+
+
+Pretax profit Margin :
+The pretax profit margin is a financial accounting tool used to measure the operating efficiency of a company.
+It is a ratio that tells us the percentage of sales that has turned into profits 
+
+Gross Sales:
+
+Gross sales is a metric for the total sales of a company, unadjusted for the costs related to generating those sales. 
+
+Net Sales:
+
+Net sales is the sum of a company's gross sales minus its returns, allowances, and discounts. 
+https://www.investopedia.com/terms/n/netsales.asp a voir 
+
+COGS :
+Cost of goods sold (COGS) refers to the direct costs of producing the goods sold by a company. Cost of goods sold is also referred to as "cost of sales."
+
+This amount includes the cost of the materials and labor directly used to create the good. It excludes indirect expenses, such as distribution costs and sales force costs.
+
+(Le coût de revient, souvent appelé prix de revient ou parfois prix naturel, représente la somme des coûts supportés pour la production et la distribution d'un bien ou d'un service)
+
+https://www.investopedia.com/terms/c/cogs.asp a voir imperativement  (Costs are associated with particular goods using one of the several formulas, including specific identification, first-in first-out (FIFO), or average cost. )
+
+Cost of Sales :
+Cost of sales (also known as cost of revenue) and COGS both track how much it costs to produce a good or service.
+Retailers typically use cost of sales on their balance sheets. Manufacturers use cost of goods sold. Because service-only businesses cannot directly tie operating expenses to something tangible, they cannot list any cost of goods sold on their income statements. Instead, service-only companies list cost of sales or cost of revenue.
+
+R&D :
+Research and development (R&D) expenses are associated directly with the research and development  .
+A company generally incurs R&D expenses in the process of finding and creating new products or services.
+
+SG&A:
+
+Includes all general and administrative expenses (G&A) as well as the direct and indirect selling expenses of the business.
+https://www.investopedia.com/terms/s/sga.asp voir :Types of SG&A Expenses et How to Calculate SG&A Expenses
+
+In many instances, SG&A expenses and operating expenses are one and the same.There are several subtle differences between SG&A expenses and operating expenses. 
+
+Interest Expense
+An interest expense is the cost incurred by an entity for borrowed funds.Interest expense is a non-operating expense shown on the income statement
+
+https://www.investopedia.com/terms/i/interestexpense.asp
+
+Interest Income
+Interest income is the amount paid to an entity for lending its money or letting another entity use its funds. (the amount earned by an investor’s money that he places in an investment or project.)
+
+Lease:
+Leases are contracts in which the property/asset owner allows another party to use the property/asset in exchange for some consideration, usually money or other assets.
+The two most common types of leases in accounting are operating and finance (or capital) leases.
+
+https://corporatefinanceinstitute.com/resources/knowledge/accounting/lease-accounting/
+
+Loan Loss Provision
+Banks create a loan loss provision to set aside funds for default or problem loans. It is an income statement expense banks can tap into when borrowers are delinquent on their payments and are unlikely to repay their loans. ?
+https://www.thebalancemoney.com/what-is-a-loan-loss-provision-5202196
+
+DuPont Analysis
+
+The DuPont analysis is a framework for analyzing fundamental performance popularized by the DuPont Corporation. DuPont analysis is a useful technique used to decompose the different drivers of return on equity (ROE). The decomposition of ROE allows investors to focus on the key metrics of financial performance individually to identify strengths and weaknesses. There are two versions of the tool—one which accounts for decomposition in three steps while the other does so in five steps.
+
+https://www.investopedia.com/terms/d/dupontanalysis.asp important 
+
+ROA :
+The term return on assets (ROA) refers to a financial ratio that indicates how profitable a company is in relation to its total assets.
+
+ROS:
+Return on sales (ROS) is a ratio used to evaluate a company's operational efficiency. 
+
+ROE:
+Return on equity (ROE) is a measure of financial performance calculated by dividing net income by shareholders' equity. Because shareholders' equity is equal to a company’s assets minus its debt, ROE is considered the return on net assets. ?
+https://www.investopedia.com/terms/r/returnonequity.asp
+
+EBITDA Margin :
+The EBITDA margin is a measure of a company's operating profit as a percentage of its revenue. 
+The acronym EBITDA stands for earnings before interest, taxes, depreciation, and amortization.  Knowing the EBITDA margin allows for a comparison of one company's real performance to others in its industry.
+
+EBIT:
+Earnings before interest and taxes (EBIT) is an indicator of a company's profitability. 
+
+EBITA:
+Earnings before interest, taxes, and amortization (EBITA) is a measure of company profitability used by investors. 
+ It is helpful for the comparison of one company to another in the same line of business.
+
+EBITA is not used as commonly as EBITDA, which adds depreciation to the calculation.
+https://www.investopedia.com/terms/e/ebita.asp voir plus 
+
+EBT :
+Earnings before tax (EBT) is a measure of financial performance. 
+
+Net Debt:
+Net debt is a liquidity metric used to determine how well a company can pay all of its debts if they were due immediately.
+Net debt shows how much debt a company has on its balance sheet compared to its liquid assets.
+https://www.investopedia.com/terms/n/netdebt.asp
+
+
+Long-Term Debt:
+Long-term debt is debt that matures in more than one year.  
+https://www.investopedia.com/terms/l/longtermdebt.asp voir car pas trop compris interet
+
+Loan Servicing
+Loan servicing refers to the administrative aspects of a loan from the time the proceeds are dispersed to the borrower until the loan is paid off.
+https://www.investopedia.com/terms/l/loan_servicing.asp
+
+Debt Service
+Debt service refers to the money that is required to cover the payment of interest and principal on a loan or other debt for a particular time period.
+
+
+Debt-to-Income Ratio :
+The debt-to-income (DTI) ratio is the percentage of your gross monthly income that goes to paying your monthly debt payments and is used by lenders to determine your borrowing risk.
+
+Debt-Service Coverage Ratio :
+The debt-service coverage ratio applies to corporate, government, and personal finance. In the context of corporate finance, the debt-service coverage ratio (DSCR) is a measurement of a firm's available cash flow to pay current debt obligations. 
+
+Fixed-Charge Coverage Ratio:
+The fixed-charge coverage ratio (FCCR) measures a firm's ability to cover its fixed charges, such as debt payments, interest expense, and equipment lease expense. It shows how well a company's earnings can cover its fixed expenses.
+
+Funded Debt:
+Funded debt is a company's debt that matures in more than one year or one business cycle. 
+Funded debt is also called long-term debt since the term exceeds 12 months. It is different from equity financing, where companies sell stock to investors to raise capital.
+https://www.investopedia.com/terms/f/fundeddebt.asp
+
+JSP:
+https://www.investopedia.com/articles/fundamental/04/042804.asp 
+
+
+G&A Expense :
+General and administrative (G&A) expenses are incurred in the day-to-day operations of a business and may not be directly tied to a specific function or department within the company. 
+https://www.investopedia.com/terms/g/general-and-administrative-expenses.asp
+
+
+Cash Flow Statement:
+Financial statement that provides aggregate data regarding all cash inflows a company receives from its ongoing operations and external investment sources. It also includes all cash outflows that pay for business activities and investments during a given period. 
+https://www.investopedia.com/terms/c/cashflowstatement.asp
+
+
+Consolidated Financial:
+The Financial Accounting Standards Board defines consolidated financial statement reporting as reporting of an entity structured with a parent company and subsidiaries.
+
+Asset:
+An asset is a resource with economic value that an individual, corporation, or country owns or controls with the expectation that it will provide a future benefit
+https://www.investopedia.com/terms/a/asset.asp
+ They're classified as current, fixed, financial, and intangible.
+
+ Current assets are short-term economic resources that are expected to be converted into cash or consumed within one year. (receivable might be uncollectible, it'll be classified as impaired => write off these assets.)
+Fixed assets are resources with an expected life of greater than a year, such as plants, equipment, and buildings (depreciation is made for fixed assets as they age. It allocates the cost of the asset over time = allow depreciation under several methods.  )
+
+Financial assets represent investments in the assets and securities of other institutions
+
+Intangible assets are economic resources that have no physical presence. Ex :  goodwill (They can be either amortized or tested for impairment each year.)
+
+
+An asset is, therefore, something that is owned by you or something that is owed to you. A $10 bill, a desktop computer, a chair, and a car are all assets. If you loaned money to someone, that loan is also an asset because you are owed that amount. For the person who owes it, the loan is a liability.
+
+Non physical asset :
+They are an important class of assets that include things like intellectual property (e.g., patents or trademarks), contractual obligations, royalties, and goodwill. Brand equity and reputation are also examples of non-physical or intangible assets that can be quite valuable.
+
+EPS:
+By dividing a company's share price by its earnings per share, an investor can see the value of a stock in terms of how much the market is willing to pay for each dollar of earnings . 
+Also a  component of calculating the price-to-earnings (P/E) ratio
+
+https://www.investopedia.com/terms/e/eps.asp diluted , sans expense exceptionelle ect 
+
+
+Carrying Value
+Carrying value is an accounting measure of value in which the value of an asset or company is based on the figures in the respective company's balance sheet.
+ For physical assets, such as machinery or computer hardware, carrying cost is calculated as (original cost - accumulated depreciation
+
+https://www.investopedia.com/terms/c/carryingvalue.asp
+
+A voir :
+
+https://www.investopedia.com/ask/answers/052615/how-can-i-calculate-carrying-value-bond.asp
+The carrying value of a bond refers to the amount of the bond’s face value plus any unamortized premiums or less any unamortized discounts. The carrying value is also commonly referred to as the carrying amount or the book value of the bond.
+
+
+
+Book Value :
+Book value is equal to the cost of carrying an asset on a company's balance sheet, and firms calculate it netting the asset against its accumulated depreciation.
+https://www.investopedia.com/terms/b/bookvalue.asp
+
+
+
+Impairment:
+In accounting, impairment is a permanent reduction in the value of a company asset. It may be a fixed asset or an intangible asset.
+
+When testing an asset for impairment ...  https://www.investopedia.com/terms/i/impairment.asp
+
+
+
+Goodwill:
+Goodwill is an intangible asset that is associated with the purchase of one company by another. It represents value that can give the acquiring company a competitive advantage.
+
+
+https://www.investopedia.com/terms/g/goodwill.asp Impairement ect et bookvalue
+
+
+Stakeholder :
+A stakeholder is a party that has an interest in a company and can either affect or be affected by the business.
+Example : investors , supplier , customers.
+
+
+
+---------------------------------------------- ON NE FAIT PAS LE SCHEMA SUR LA LIQUIDATION + BALANCE SHEET  -----------------------------------
+Equity:
+https://www.investopedia.com/terms/e/equity.asp
+Liquidity Ratios:
+https://www.investopedia.com/terms/l/liquidityratios.asp
+Goodwill:
+
+https://www.investopedia.com/terms/g/goodwill.asp
+Accounts Receivable (AR) :
+https://www.investopedia.com/terms/a/accountsreceivable.asp
+Marketable Securities :
+https://www.investopedia.com/terms/m/marketablesecurities.asp
+Cash:
+https://www.investopedia.com/terms/c/cashequivalents.asp
+----
+Accrued Expense:
+https://www.investopedia.com/terms/a/accruedexpense.asp
+Intangible Assets:
+https://www.investopedia.com/terms/i/intangibleasset.asp
+Long-Term Assets:
+https://www.investopedia.com/terms/l/longtermassets.asp
+Hard Asset:
+https://www.investopedia.com/terms/h/hard_asset.asp
+Tangible Asset :
+https://www.investopedia.com/terms/t/tangibleasset.asp
+Fixed Asset :
+https://www.investopedia.com/terms/f/fixedasset.asp
+Net Lease :
+https://www.investopedia.com/terms/n/net-lease.asp
+Accruals:
+https://www.investopedia.com/terms/a/accruals.asp
+Advance Payment:
+https://www.investopedia.com/terms/a/advance-payment.asp
+CPLTD:
+https://www.investopedia.com/terms/c/currentportionlongtermdebt.asp
+Leverage Ratio :
+https://www.investopedia.com/terms/l/leverageratio.asp
+DPO :
+https://www.investopedia.com/terms/d/dpo.asp
+DSI:
+https://www.investopedia.com/terms/d/days-sales-inventory-dsi.asp
+DSO:
+https://www.investopedia.com/terms/d/dso.asp
+Gearing Ratio:
+https://www.investopedia.com/terms/g/gearingratio.asp
+https://www.investopedia.com/ask/answers/121814/what-good-gearing-ratio.asp
+
+
+------------------------------------------------------------
+
+Like for like :
+Like-for-like sales serve as a method of financial analysis that is used to identify which of a company's products, divisions, or stores are contributing to its growth and which are lagging. 
+It also excludes extraneous factors that could artificially inflate or deflate the numbers, such as a major foreign acquisition.
+https://www.investopedia.com/terms/l/likeforlikesales.asp

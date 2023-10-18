@@ -1,0 +1,513 @@
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE TRANSPORT';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE INVOICESALES';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE DATER';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE CUSTOMER';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE GOODS';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE  SHIPPER ';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE  EMISSIONMETHOD ';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE WAREHOUSE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+prompt "Fin Suppression des relations"
+
+
+set serveroutput on ;
+
+
+CREATE TABLE WAREHOUSE (
+
+idWarehouse NUMERIC(6,0) ,
+numberWarehouse NUMBER(10) UNIQUE CHECK ( numberWarehouse >=0) ,
+--CONTINENT :
+continentName varchar(12), --longest continent name : ("North Africa").size()== 11 
+--REGION :
+unSubRegion varchar(26),  --longest SubRegion (aka intermediate region ) name : ("Australia and New Zealand").size() == 25 
+unRegion varchar(9), --longest Region name : ("Americas").size() ==6
+UTC NUMBER(2,2) CHECK (UTC >= -12 AND UTC <=14 ), -- Baker Island UTC-12 et  Kiribati UTC+14
+--COUNTRY:
+countryName varchar(56), -- longest Country name : ("The United Kingdom of Great Britain and Northern Ireland").size() == 56  
+--DISTRICT
+districtName varchar(80) , -- le systeme de region n'étant pas uniformisé c'est difficile de nommer le concept de maniere coherente
+subDistrictName varchar(80),--les pays on au moins une unité de mesure en dessous de la "region"/district 
+--CITY
+cityName varchar(59), --longest city name ("Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch").size()==58 
+cityPostalCode NUMBER(12) CHECK (cityPostalCode >=0) , --encore une fois c'est difficile d'uniformisé zip souvent choisi comme usa
+citySoundex NUMBER(25) CHECK (citySoundex >=0) , --systeme phonetique
+cityMetaphone NUMBER(25) CHECK (cityMetaphone >=0) , -- pareil soundex mais parfois on a l'un et pas l'autre donc ... https://en.wikipedia.org/wiki/Phonetic_algorithm
+--ABSOLUTE
+longitude_deg float  CHECK ( longitude_deg >= -180 AND longitude_deg <= 180)  ,
+latitude_deg float CHECK ( latitude_deg >= -90 AND latitude_deg <= 90)  ,
+longitude_grd varchar(9) , --regex
+latitude_grd varchar(8) ,--regex
+longitude_dms varchar(9) ,--regexlongitude_dms varchar(8), --regex
+latitude_dms varchar(9) ,--regexlatitude_dms varchar(8), --regex 
+  
+--PROPERTIES:
+surface NUMBER(2,2) CHECK ( surface > 0) ,
+maxCapacity NUMBER(2,2) CHECK ( maxCapacity > 0) ,
+maxcapacityunit VARCHAR(5)
+
+
+
+);
+
+
+CREATE TABLE EMISSIONMETHOD (
+idMethod NUMERIC(6,0),--(PK)
+uuid NUMERIC(6,0), --(NN)
+
+--SHIPPER :
+idNameOfShipper VARCHAR(255), --ex "Long haul air freight (>3700km)-IATA RP1678" 
+sector varchar(50),
+category varchar(70),
+
+--PROPERTIES :
+
+sourceAPI VARCHAR(100), --ex climatiq API 
+methodName VARCHAR(25),
+years NUMBER(4),
+unitType varchar(30),
+dataquality varchar(25)
+);
+
+
+
+
+CREATE TABLE SHIPPER (
+
+idShipper NUMERIC(6,0),
+idEmployee NUMERIC(6,0), --(DD) la personne qui est responsable du transport de la marchandise , abstrait les infos perso du pilote 
+companyName VARCHAR(80),
+
+-- CATEGORY (A DISCUTER):
+categoryOfTransport VARCHAR(50), --ex : "transport service and warehousing"  , "air freight"
+typeOfTransport VARCHAR(5) CHECK  (typeOfTransport IN ('air' , 'rail' ,'road' , 'water' )), --(longestTypeOfTransportName).size()==5
+categoryOfShipper VARCHAR(80), --ex Long haul air freight
+lca_activity VARCHAR(25),
+subCategoryName VARCHAR(150), --ex : Freight logistics - storage + transhipment - chilled https://www.climatiq.io/explorer?category=Transport+Services+and+Warehousing&sector=Transport&page=18
+
+
+
+--FUEL :
+fuelName VARCHAR(50) ,
+fuelType VARCHAR(50),
+fuelEmissionIndiceLKG float , -- emission de KG CO2e par litre consommer 
+
+--ENGINE :
+engineType VARCHAR(50), --ex Internal combustion engines
+powertrain VARCHAR(75), --ex :Electric Vehicle (EV)
+engineConsommationWL float , --consommation de fuel par energie deployé
+
+--PROPERTIES : 
+name VARCHAR(80),
+years NUMBER(4),
+model VARCHAR(255),
+category VARCHAR(35),
+sizeH float CHECK ( sizeH >= 0) ,-- in m
+sizeW float CHECK ( sizeW >= 0),--in m
+volume float CHECK ( volume >=0),
+weight float , -- poids sans charge 
+ecologicalRank VARCHAR(3), -- faire IN ("AA" , "AB+" , ect. ) 
+
+
+maxcapacity  float CHECK ( maxcapacity >=0), -- 100dwt
+maxcapacityunit VARCHAR(5), --dwt
+
+
+
+--PROPERTIES:
+
+curCapacity NUMBER(2,2) CHECK ( curCapacity >= 0) --% de sa capacité occupé par la marchandise 
+
+/*
+curWeight float , 
+co2EmissionPerKm float, -- kg<=> volume co2
+fuelConsomationPerKm float, -- liter
+*/
+
+);
+
+
+
+CREATE TABLE GOODS(
+idGoods NUMERIC(6,0),
+
+
+-- STORE ID : Natural Key
+SKUNumber VARCHAR(25) , -- --(~DD) generalement 3*3 AlphaNumeric sequence , abstraction de : category of goods , store , supplier | gender , brand , color , size | 
+UPCNumber NUMBER(12),--(~DD) 6+5+1 Numeric sequence , 6 abstraction de : supplier | 5 product features |  1 check digit
+
+-- STORE PROPERTIES :
+storageDepartementName VARCHAR(45),
+storageNecessity VARCHAR(45) , --{noLight , },
+storageTemperature NUMBER(2,2) ,
+storageCaution VARCHAR(45),-- fragile ect 
+
+--BRAND:
+brandName VARCHAR(25),
+
+
+--CATEGORY :
+typeOfContent VARCHAR(5) CHECK (typeOfContent IN   ('liquid' , 'solid' )) , -- (longestTypeOfContentName).size()==5
+categoryName VARCHAR(25),
+livedCategory VARCHAR(12) CHECK ( livedCategory IN   ('short' , 'med' , 'long' , 'imperishable' )), --(longestLivedCategoryName).size()==12
+
+
+--PACKAGE  :
+packageType VARCHAR(25),
+packageSizeH float CHECK ( packageSizeH >= 0) ,-- in m
+packageSizeW float CHECK ( packageSizeW >= 0),--in m
+packageWeight float CHECK ( packageWeight >= 0) ,--in kg
+packageEcologicalRank VARCHAR(3),
+
+
+--PRODUCT :
+description VARCHAR2(255),
+composition VARCHAR2(255),
+productRisk VARCHAR(45) , -- {abrasive , toxic , }
+productSizeH float CHECK ( productSizeH >0),
+productSizeW float CHECK ( productSizeW >0) ,
+productWeight float  CHECK ( productWeight >0) ,--in kg
+productNetWeight float CHECK ( productNetWeight > 0) , -- in kg mais conversion en litre if liquide product 
+productEcologicalRank VARCHAR(3) 
+
+
+
+);
+
+
+
+
+CREATE TABLE CUSTOMER (
+idCustomer NUMERIC(6,0),
+
+-- PHYSIQUE ADDRESS : 
+address VARCHAR(80),
+districtName VARCHAR(60),
+cityName VARCHAR(60),
+countryName VARCHAR(60),
+
+--POSTAL ADDRESS :
+postalCode NUMBER(12) CHECK (postalCode >=0) ,
+--COMPOSITION generale :
+districtPostalCode NUMBER(2) CHECK (districtPostalCode >=0) , -- region https://fr.wikipedia.org/wiki/Code_postal
+SCPostalCode NUMBER(4) CHECK (SCPostalCode >=0) , --code postal du bureau distributeur des villes Sectional center par ex Inde : arrondissementPostal | district | bureau de poste 
+
+--FACTURATION :
+billCorporationName VARCHAR(60), -- le client peut décider d'une adresse de facturation ainsi le nom sera l'entreprise a laquelle le facture est destiné
+departementName VARCHAR(25), -- une compagnie ou le departement d'une compagnie par exemple 
+groupName VARCHAR(25), -- un groupe de compagnie ou "un groupe de departement : une compangnie"
+
+--BILLADDRESS :
+billAdress VARCHAR(80),
+
+--PROPERTIES :
+firstname VARCHAR(40),
+lastname VARCHAR(40),
+isPro NUMBER(1) CHECK ( isPro =0 OR isPro =1) , --0/1
+creditRating NUMBER(2,2)  --confiance que l'on place dans  le client generalement NUMBER(2,2) car pourcentage ou sinon normalisé [0,1]
+
+);
+
+
+
+CREATE TABLE DATER (
+idDate NUMERIC(6,0),
+datee DATE ,
+dateStr VARCHAR(18), -- ("1st September 0000").size()==18 
+
+--COMPOSTION:
+
+	--DAY:
+	dayStr VARCHAR(9) CHECK  (dayStr IN ( 'Monday', 'Tuesday' , 'Wednesday' , 'Thursday' , 'Friday' , 'Saturday' , 'Sunday' )), --("Wednesday").size()==9
+	dayNbWeek NUMBER(1) CHECK (dayNbWeek >  0 AND  dayNbWeek <= 7), -- ("7").size()==1 
+	dayNbMonth NUMBER(2) CHECK (dayNbMonth >  0 AND dayNbMonth <= 31) , -- ("31").size()==2 
+	dayNbFMonth NUMBER(2) CHECK (dayNbFMonth >  0  AND  dayNbFMonth <= 31), --("31").size()==2  le numero du jour dans le mois fiscal 
+	dayNbYear NUMBER(3) CHECK (dayNbYear > 0 AND dayNbYear <= 366 ) , -- ("365").size()==3 
+	dayNbFYear NUMBER(3) CHECK (dayNbFYear> 0 AND dayNbFYear <= 366 ) ,--("365").size()==3  le numero du jour dans l'annee fiscal choisi par entreprise l'oreal deb = octobre de memoire car calendrier fiscal USA TODO : a verifier
+	
+	--WEEK
+	weekLastDay NUMBER(1) CHECK (weekLastDay >  0 AND  weekLastDay <= 7), -- ("7").size()==1 les semaines entreprises peuvent commencer un mecredi 
+	weekNbMonth NUMBER(1) CHECK (weekNbMonth > 0 AND  weekNbMonth <= 4 ) ,-- ("4").size()==1 ; view : on pourrait le noter WM00 ?   TODO 
+	weekNbYear NUMBER(2) CHECK ( weekNbYear > 0 AND weekNbYear <=53 ), --("53").size()==2  ; view : on le note WN00 
+	
+	
+	--FISCAL WEEK
+	fweekNb NUMBER(2) CHECK (fweekNb > 0 AND fweekNb <=53 ) , -- view on pourrait le noter FW00
+	fweekNbYear NUMBER(2) CHECK (fweekNbYear > 0 AND fweekNbYear <=53 ), -- view :on pourrait le noter FWY00 ? TODO  
+	
+	
+	
+	--MONTH
+	monthStr VARCHAR(9) CHECK ( monthStr IN ('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' )),--("September").size()==9
+	monthLastDay NUMBER(2) CHECK (monthLastDay>0 AND monthLastDay <31), -- ("31").size()==2 
+	monthNbYear NUMBER(2) CHECK ( monthNbYear > 0 AND monthNbYear <= 12), --view : on pourrait le noter M00
+	
+	--FISCAL MONTH
+	fmonthNb NUMBER(2) CHECK ( fmonthNb > 0 AND fmonthNb <= 12) , -- ; view: on pourrait le noter FM00
+	fmonthNbYear NUMBER(2) CHECK (fmonthNbYear >0 AND fmonthNbYear <=12), --TODO  ; view: on pourrait le noter FMY00  
+	
+	--QUARTER
+	quarterNb NUMBER(1) CHECK (quarterNb > 0 AND quarterNb <= 3 )  , --("3").size()==1 ; view: on le note Q0
+	
+	--FISCAL QUARTER
+	fquarterNb NUMBER(1) CHECK( fquarterNb > 0 AND fquarterNb <= 3 ) , --("3").size()==1 ; view: on le note FQ0
+	
+	--YEAR
+	yearNb NUMBER(4) CHECK( yearNb >=0) , -- ("0000").size()==4 
+
+	--FISCAL YEAR
+	fyearNb NUMBER(4) CHECK (fyearNb >=0) , -- ("0000").size()==4 ; view: on le note FY0000
+	
+	--YEAR-MONTH
+	yearmonth VARCHAR(7), -- regex format YYYY-MM 
+
+	--YEAR-QUARTER
+	yearquarter VARCHAR(6), -- ("YYYYQQ").size()==6 regex format YYYY'Q'Q e.g 2020Q1 
+
+	--FISCAL YEAR-QUARTER 
+	fyearquarter VARCHAR(6),--YYYY'Q'Q regex format YYYY'Q'Q e.g 2020Q1
+
+	--FISCAL HALFYEAR
+	fhalfyear NUMBER(1) CHECK (fhalfyear=1 OR fhalfyear =2 ) , -- jsp TODO 
+	
+
+	--SQL
+	sqlDatestamp DATE, -- jsp TODO ++
+
+	--NOT BUSINESS DAY
+	isWeek NUMBER(1) CHECK ( isWeek =0 OR isWeek =1) , --0/1
+	isHoliday NUMBER(1) CHECK ( isHoliday =0 OR isHoliday =1)  --0/1
+	
+);
+
+
+
+	
+CREATE TABLE INVOICESALES (
+
+--NNKEY :
+id_invoice NUMBER(25), --(DD) Natural key 
+id_invoiceLine NUMBER(2), --(DD) Natural key sub-class
+
+--KEYDATE : --TODO remplacer par DATER 
+id_date_invoice NUMERIC(6,0),--(FK)
+id_date_rqstShip NUMERIC(6,0), --(FK) la date de livraison demander 
+id_date_actShip NUMERIC(6,0), --(FK) la date reelle de livraison 
+id_date_duePayment NUMERIC(6,0),
+id_date_actPayment NUMERIC(6,0),
+
+--KEYSHIP:
+id_warehouse NUMERIC(6,0), --(FK) provenance 
+--id_addrWarehouse NUMERIC(6,0), --pour la distance 
+--id_addrCustomer NUMERIC(6,0), -- 
+id_shipper NUMERIC(6,0),
+id_metaShip NUMERIC(6,0), --(FK) qualité/indice de satisfaction du transport
+
+
+--CUSTOMEREP
+id_customer NUMERIC(6,0),--(FK) le client qui achete
+id_operator NUMERIC(6,0),--(FK) le responsable de la vente 
+id_pdv NUMERIC(6,0), --(FK) le pointDeVente soit internet soit un magasin si magasin warehouseLocation = stockmagasin ? 
+
+--SALES 
+id_goods NUMERIC(6,0),--(FK) le produit acheter dans la ligne
+id_deal NUMERIC(6,0), --(FK) le deal : les conditions de la vente : dueDate , allowance , incitation ,ect 
+
+
+
+--SHIP
+ship_freighCost float CHECK (ship_freighCost >=0) ,
+ship_onTime NUMBER(2) CHECK(ship_onTime >=0),--on pourrait le deduire avec un calcul difficile quitte a etre incoherent pour la granularite ligne ...
+ship_lagRqstActu DATE,
+ship_extFreightCost float  CHECK (ship_extFreightCost >=0) ,
+
+--GOODS :
+goods_uPrice float CHECK ( goods_uPrice >=0), --unitary price 
+goods_uMfg float CHECK ( goods_uMfg >=0) , --manufacturing cost 
+goods_uStorageCost float CHECK (goods_uStorageCost >= 0) ,
+goods_uDistribCost float CHECK (goods_uDistribCost >=0) ,
+goods_uFootPrint float CHECK ( goods_uFootPrint >=0),
+goods_quantity NUMBER(2) CHECK ( goods_quantity >0 ),
+goods_return NUMBER(9)CHECK ( goods_return >= 0 ) ,
+
+--PRICEMEASURE : 
+
+extTax float , --les tax s'applique pour calculer le gross 
+extGross float , -- chiffre affaire brut degage par la ligne dans la devise Universelle de la boite
+extAllowance float , -- cout relatif au retour perte ect d'ou l'extended ca inclu aussi taxe ? 
+extDiscount float , -- devise Universelle de la boite
+--extNet float,-- devise Universelle de la boite 
+extMfg float , --manufacturing cost 
+extStorageCost float,
+extDistribCost float,
+extContribChiffAff float
+
+
+
+);
+
+
+
+CREATE TABLE TRANSPORT (
+
+--KEYDATE : --TODO remplacer par DATER 
+id_date_travel_depart NUMERIC(6,0),--(FK) depart de la manufacture ou de l'entrepot
+id_date_travel_departScheduled NUMERIC(6,0),
+--isManufacture NUMBER(1) CHECK ( isManufacture =0 OR isManufacture =1) , --0/1
+id_date_travel_arrival NUMERIC(6,0), --(FK) la date d'arriver à l'entrepot 
+id_date_travel_arrivalScheduled NUMERIC(6,0), --(FK) Pas sur de cette FK
+
+
+id_date_inspection NUMERIC(6,0), -- inspection de la marchandise  pas tres relevant dans ce cas car c'est surement pas l'oreal qui le gere
+id_date_bin NUMERIC(6,0), --l'heure ou l'on a finit de placer les lots dans l'embarquation , cela dit ça permet d'évaluer la perf du shipment : perf Co2 , perf temps , perf package
+
+
+--KEYLOCATION : 
+id_supplyline NUMERIC(6,0) , --(DD)
+id_location_arrival NUMERIC(6,0) , 
+id_location_depart NUMERIC(6,0),
+
+--TMSKEY 
+id_shipper NUMERIC(6,0),--(FK) 
+id_methodGHG NUMERIC(6,0),
+id_op NUMERIC(6,0),
+
+--CONTRAT : 
+id_deal NUMERIC(6,0),--(FK)  ? necessaire pour les return ? 
+--id_lots NUMERIC(6,0), --(FK)  
+--id contract passer avec entreprise livraison pour tracking ? 
+
+
+
+--TRAVEL : 
+travel_distance float CHECK (travel_distance >= 0),
+travel_duration DATE ,
+travel_extFreightCost float CHECK (travel_extFreightCost >=0),
+travel_schDuration DATE,
+
+
+--SHIPPER :
+shipper_consommation float CHECK ( shipper_consommation >=0),
+shipper_fuel_emissionFactor float CHECK( shipper_fuel_emissionFactor >=0),
+shipper_extemissionCO2eq float CHECK (shipper_extemissionCO2eq >=0),
+shipper_unitType VARCHAR(5), --l'unité de "distance" par ex comme CO2eq est en kg on aura kg/unitType peut être energie/km voir temps si autre param fixé
+
+
+--EMISSION :
+expemissionFactors_CO2 float CHECK (expemissionFactors_CO2 >=0), --expected by API 
+expemissionFactors_CO2eq float CHECK (expemissionFactors_CO2eq >=0),
+expemissionFactors_CH4 float CHECK (expemissionFactors_CH4 >=0),
+expemissionFactors_N2O float CHECK (expemissionFactors_N2O >=0),
+expemission_extCO2eq float CHECK (expemission_extCO2eq >=0),
+expemissionFactors_unitType VARCHAR(25), --standardisé par entreprise mais on garde au cas ou si l'entreprise change en cours de route sa mesure on pourra differencier les mesures dans historique 
+
+
+--PACKAGING :
+tPackaging_extWeight float CHECK ( tPackaging_extWeight >=0), -- le packaging est ici le packaging de transport et non du produit 
+product_packaging_extWeight float CHECK ( product_packaging_extWeight >=0),  -- packaging des produits transporté  
+packaging_extWeight float CHECK (packaging_extWeight>=0),
+
+--PRODUCTS :
+product_extQuantity NUMBER(9) CHECK ( product_extQuantity >=0),  
+product_extFWeigt float CHECK (product_extFWeigt >=0) , -- quantité  net des produits transporté 
+product_extQuantityReturn NUMBER(25) CHECK (product_extQuantityReturn >=0),
+product_extQuantityRcv NUMBER(25) CHECK ( product_extQuantityRcv >=0 ),
+product_extQuantityDamaged NUMBER(25) CHECK ( product_extQuantityDamaged >= 0) ,
+
+product_extGrossAmmount float CHECK ( product_extGrossAmmount >=0), -- prix brut de l'ensemble de la marchandise transporte pour ce produit TODO : verifier terminologie + pertinence autre indic
+product_extNetAmmount float CHECK ( product_extNetAmmount >=0),--prix net de la marchandise en comptant l'allowance et discount : perte potentielle pour l'entreprise si la marchandise se perd
+
+--OTHER MEASURE : 
+travel_lagDate_ActSch_depart DATE,
+travel_lagDate_ActSch_arrival DATE, --isInTime NUMBER(1) CHECK ( isInTime = 0 OR isInTime=1) <=> lagA ==0
+travel_lagDate_ActSch_duration DATE,
+
+/*
+travel_ratioDate_ActSch_depart DATE,
+travel_ratioDate_ActSch_arrival DATE,
+travel_ratioDate_ActSch_duration DATE,
+*/
+
+tproduct_extTotalWeight float CHECK (tproduct_extTotalWeight>=0) -- poids total des produits transporté tpackage+package+formula
+
+
+
+--isLastTravel ? 
+
+);
