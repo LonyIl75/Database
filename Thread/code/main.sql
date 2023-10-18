@@ -1,0 +1,1004 @@
+--TODO : uniformiser la presentation( rajouter espace/delimiteur pour distinguer l'espace assigné au fonction d'une table + "TABLE nom_table" "Trigger nom_trigger " ) + passé un lintter 
+
+
+--TODO : s'interroger sur les permssions + notifications  (QUESTION)
+ 
+-- TODO :  MUTIPLE KEY  + propagation contrainte / backtracking 
+---- U  stand for unique (pareil verif )
+
+--GENERATED 	VARCHAR2(14) 	  	Whether the name of the constraint is user or system generated pour sequence auto 
+
+
+-- BAD TO_DATE
+-- TODO : faire table de token avec id user , id_token , date de creation du token , date d'expiration du token 
+--TODO : CRON operation qui se lance chaque tant de temps pour clean la table : clean les tokens expirés
+-- Une table de permission pour chaque thread + une table de permission ressource
+-- IF enseignant  resp if admin alors droit sur ressource resp thread courant 
+
+-- recherche audit versioning : la table change de version a chaque insertion , vue qui determine la last update (comme filtre ?)
+
+-- TODO : catcher et utiliser les erreurs ( pour les permissions notamment / notifications)
+
+-- NOTIFICATIONS ?
+
+--RECHERCHE : 
+-- LOCK X et R : TRANSACTIOn 
+
+--SINON :
+
+-- CACTH error and looop voir en haut 
+
+
+
+prompt "Suppression des relations"
+
+
+
+
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE AUDIT_NOTE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE NOTE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE CONTRIBUETHREAD';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE AUDIT_THREADMAT';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE THREADMATIERE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE AUDIT_RC';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE RESSOURCECOURS';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE BIBLIOGRAPHIE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE CARACTERISE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE MOTCLEF';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE RESSOURCE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE FORMATRES';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE GROUPETD';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE INSCRIS';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE DONNECOURS';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE COURS';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE MATIERE';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE ETUDIANT';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE NIVEAU';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+
+BEGIN
+EXECUTE IMMEDIATE 'DROP TABLE ENSEIGNANT';
+EXCEPTION
+ WHEN OTHERS THEN
+	IF SQLCODE != -942 THEN
+	RAISE;
+	END IF;
+END;
+/
+
+prompt "Suppression des relations"
+
+set serveroutput on ; 
+        				
+
+
+CREATE OR REPLACE FUNCTION choose_fk(tableNameFk IN VARCHAR2, colNameFk IN VARCHAR2 ) --,type IN VARCHAR2  )
+RETURN VARCHAR2
+IS
+tmp_id VARCHAR2(150);
+BEGIN
+  
+  EXECUTE IMMEDIATE 'SELECT ' || tableNameFk|| '.' || colNameFk|| ' FROM ' || tableNameFk || ' WHERE ORDER BY DBMS_RANDOM.VALUE FETCH NEXT 1 ROW ONLY' INTO tmp_id;
+ RETURN (tmp_id) ;
+            			
+  END;
+/
+    prompt('jijii');
+    
+      	
+            			
+CREATE OR REPLACE PROCEDURE fill_table(tableName IN VARCHAR2, owner IN VARCHAR2 DEFAULT USER, rowCount IN INTEGER DEFAULT 1)
+IS
+ commmandText clob;
+    selectList clob;
+    columnList clob;
+    columnExpression VARCHAR2(255);
+    separator VARCHAR2(2);
+    
+   TYPE cst_info IS RECORD (
+   col_name ALL_CONS_COLUMNS.COLUMN_NAME%TYPE,
+   name ALL_CONSTRAINTS.CONSTRAINT_NAME%TYPE,
+   type ALL_CONSTRAINTS.CONSTRAINT_TYPE%TYPE,
+   chk_condition ALL_CONSTRAINTS.SEARCH_CONDITION%TYPE,
+   owner ALL_CONSTRAINTS.OWNER%TYPE,
+   ref_owner ALL_CONSTRAINTS.R_OWNER%TYPE,
+   ref_cst_name ALL_CONSTRAINTS.R_CONSTRAINT_NAME%TYPE
+   );
+   
+   TYPE RefCurs IS REF CURSOR RETURN cst_info;
+   curs_cst REFCURS ;
+   tmp_cst cst_info ;
+   tmp_test VARCHAR(10);
+   cpt NUMBER;
+   tmp_Tablefk  ALL_CONSTRAINTS.TABLE_NAME%TYPE;
+   tmp_Colfk ALL_CONS_COLUMNS.COLUMN_NAME%TYPE ;
+   tmp_countDiffFk NUMBER;
+   tmp_id VARCHAR2(150); --conversion varchar2 vers n'importe quel type
+   tmp_debug_query VARCHAR2(255);
+   tmp_prevent VARCHAR2(255);
+BEGIN
+ 
+OPEN curs_cst FOR SELECT all_cstCol.COLUMN_NAME, all_cst.CONSTRAINT_NAME , all_cst.CONSTRAINT_TYPE , all_cst.search_condition , all_cst.owner,all_cst.r_owner ,all_cst.r_constraint_name FROM ALL_constraints all_cst , ALL_CONS_COLUMNS all_cstCol WHERE all_cst.TABLE_NAME=tableName AND all_cst.CONSTRAINT_NAME = all_cstCol.CONSTRAINT_NAME; -- remplacer par join  
+
+
+    IF rowCount <= 0 THEN RETURN; END IF;
+
+    FOR columnData IN (SELECT column_name, data_type, data_precision precision, data_length, ROWNUM rn FROM all_tab_cols WHERE owner = fill_table.owner AND table_name = tableName AND column_id IS NOT NULL) LOOP
+  columnExpression :=
+            CASE columnData.data_type
+                WHEN 'NUMBER' THEN 'dbms_random.value * ' ||  POWER(1,NVL(columnData.precision, 8))*rowCount --  1 --> 10
+                WHEN 'VARCHAR2' THEN 'dbms_random.string(''X'', ' || columnData.data_length || ')'
+                WHEN 'DATE' THEN 'SYSDATE - dbms_random.value * 365'
+                WHEN 'NUMERIC' THEN 'dbms_random.value ( 1 , ' ||POWER (10, columnData.precision)||')'
+               	
+            END;
+           
+           LOOP 
+            	FETCH curs_cst INTO tmp_cst ;
+            	EXIT WHEN curs_cst%NOTFOUND;
+			IF columnData.column_name = tmp_cst.col_name THEN -- tmp_cst.CONSTRAINT_NAME LIKE '%PK' | LIKE '%FK' | ...  
+           		
+           		IF tmp_cst.type ='P' THEN  
+      				tmp_prevent := 
+      				CASE columnData.data_type 
+      					WHEN 'NUMBER' THEN 'TRUNC(' || columnExpression || ',0)' 
+      					--WHEN OTHERS THEN columnExpression 
+      				END; 
+      				columnExpression := tmp_prevent;
+            				
+            		ELSIF tmp_cst.type ='R' THEN 
+           				SELECT cst2.TABLE_NAME , cst2.COLUMN_NAME INTO tmp_Tablefk , tmp_Colfk FROM ALL_CONS_COLUMNS cst2 WHERE cst2.owner = tmp_cst.ref_owner AND tmp_cst.ref_cst_name = cst2.constraint_name;
+/*				EXECUTE IMMEDIATE 'SELECT  ' || rowCount || '- COUNT(*)  FROM ' || tmp_Tablefk   INTO tmp_countDiffFk; -- a refaire 
+           		 	IF tmp_countDiffFk > 0 THEN
+
+           		 		fill_table( tmp_Tablefk  , owner , rowCount => tmp_countDiffFk ) ; -- en soit on pourrait enlever le IF 
+           		 	END IF;*/ -- PAS VRAI si pas UNIQUE FK 
+           			columnExpression :=' choose_fk(''' || tmp_Tablefk ||''','''||  tmp_Colfk|| ''') ';
+          		   				
+          		ELSIF  tmp_cst.type ='C' THEN 
+          			dbms_output.put_line('ici9');
+          		ELSIF  tmp_cst.type ='U' THEN
+            			dbms_output.put_line('ici_10');
+            		ELSE 
+            			RAISE_APPLICATION_ERROR(-20500,'constraint_name: '||tmp_cst.name ||  ' type : ' || tmp_cst.type || ' column_name :' || tmp_cst.col_name  );
+           		END IF;
+            	dbms_output.put_line('ici7');
+            		END IF ;
+           
+      
+            END LOOP ; 
+
+	dbms_output.put_line('ici3');
+        columnList := columnList || separator || '"' || columnData.column_name || '"';
+        selectList := selectList || separator || columnExpression || CHR(10);
+        separator := ', ';
+  
+    END LOOP;
+    commmandText := 'INSERT INTO ' || owner || '.' || tableName || ' (' || columnList || ')' || CHR(10) || ' SELECT ' || selectList || 'FROM dual CONNECT BY LEVEL <= ' || rowCount;
+    dbms_output.put_line(commmandText);
+
+   EXECUTE IMMEDIATE commmandText;
+/*   EXCEPTION
+ WHEN  DUP_VALU_ON_INDEX THEN --ORA--00001 THEN
+ */	
+
+END;
+/
+
+
+CREATE TABLE ENSEIGNANT (
+	IDENSEIGNANT NUMERIC(6,0),
+	NOM VARCHAR(16),
+	PRENOM VARCHAR(16),
+	DEPARTEMENT VARCHAR(25),
+	CONSTRAINT PK_ENSEIGNANT PRIMARY KEY (IDENSEIGNANT)
+);
+
+
+EXEC fill_table( 'ENSEIGNANT' , rowcount => 5) ;
+
+prompt "ENSEIGNANT"
+
+CREATE TABLE NIVEAU (
+	IDNIVEAU NUMERIC(6,0),
+	NIVEAU VARCHAR(5),
+	CONSTRAINT PK_NIVEAU PRIMARY KEY (IDNIVEAU)
+);
+
+INSERT INTO NIVEAU(IDNIVEAU , NIVEAU ) VALUES (1,'L1');
+INSERT INTO NIVEAU(IDNIVEAU , NIVEAU ) VALUES (2,'L2');
+INSERT INTO NIVEAU(IDNIVEAU , NIVEAU ) VALUES (3,'L3');
+INSERT INTO NIVEAU(IDNIVEAU , NIVEAU ) VALUES (4,'M1');
+INSERT INTO NIVEAU(IDNIVEAU , NIVEAU ) VALUES (5,'M2');
+INSERT INTO NIVEAU(IDNIVEAU , NIVEAU ) VALUES (6,'THESE');
+
+CREATE OR REPLACE TRIGGER immutable_niveau -- faute de creer create immutable table a cause date retention
+BEFORE INSERT OR DELETE OR UPDATE ON  NIVEAU   -- a voir avec grant et voir pour insert  ou autre op vrai si admin
+FOR EACH ROW 
+BEGIN
+	RAISE_APPLICATION_ERROR(-20500,'Vous ne pouvez pas modifier cette table ');
+END;
+/ 
+
+	
+
+
+prompt "NIVEAU"
+CREATE TABLE ETUDIANT (
+	IDETUDIANT NUMERIC(6,0),
+	NOM VARCHAR(16),
+	PRENOM VARCHAR(16) CHECK (PRENOM IN ('pierre','paul','jacques')),
+	FILIERE_ETU VARCHAR(16),
+	NIVEAU_ETU NUMERIC(6,0),
+	CONSTRAINT PK_ETUDIANT PRIMARY KEY (IDETUDIANT),
+	CONSTRAINT FK_ETUDIANT_NIVEAU FOREIGN KEY (NIVEAU_ETU) REFERENCES NIVEAU (IDNIVEAU) 
+);
+
+
+
+prompt "ETUDIANT"
+
+
+CREATE TABLE GROUPETD (
+	ID_ENSEIGNANT_TD NUMERIC(6,0),
+	ID_ETUDIANT_TD NUMERIC(6,0),
+	IDGROUPE NUMERIC(6,0),
+	CONSTRAINT PK_GROUPETD PRIMARY KEY (IDGROUPE),--(ID_ENSEIGNANT_TD, ID_ETUDIANT_TD),
+    	CONSTRAINT FK_ENSEIGNANT_ENSEIGNETD FOREIGN KEY (ID_ENSEIGNANT_TD) REFERENCES ENSEIGNANT (IDENSEIGNANT),-- ON DELETE CASCADE, ICI
+    	CONSTRAINT FK_ETUDIANT_ENSEIGNETD FOREIGN KEY (ID_ETUDIANT_TD) REFERENCES ETUDIANT (IDETUDIANT) --ON DELETE CASCADE  
+);
+
+--on veut savoir quel étudiant a eut quel prof pour pouvoir demander au étudiant les notes des cours du prof en question
+-- si l'enseignant n'existe plus alors il n'y a plus de raison de garder le lien entre cet enseignant et l'étudiant
+-- mais on le garde car on ne veut pas supprimer le groupe : ICI
+prompt"GROUPETD"
+
+-- Ordre trigger  , pour flex : Order of execution trigger in Oracle stackoverflow 
+--1 :
+CREATE OR REPLACE TRIGGER validate_numberEtu
+BEFORE INSERT ON GROUPETD  
+FOR EACH ROW 
+DECLARE
+	nb_etu INTEGER ; -- fonctionne pas select assigne ici à verifier 
+BEGIN
+SELECT COUNT(ID_ETUDIANT_TD) INTO nb_etu FROM GROUPETD WHERE IDGROUPE=:NEW.IDGROUPE;
+IF nb_etu=30 THEN  --fonctionne pas avec select ici 
+	RAISE_APPLICATION_ERROR(-20500,'Le groupe est plein vous ne pouvez pas insérer un autre étudiant ');
+END IF ;
+END;
+/ 
+
+-- 2 : 
+--verifie que la ligne insérer reference un etudiant dont NIVEAU et FILIERE sont egaux au niveau et filiere de tous les membres du groupe de td 
+CREATE OR REPLACE TRIGGER validate_etu
+BEFORE INSERT OR UPDATE ON GROUPETD  
+FOR EACH ROW 
+DECLARE 
+vrai INTEGER;
+BEGIN
+SELECT COUNT(*) INTO vrai FROM ETUDIANT WHERE IDETUDIANT=:NEW.ID_ETUDIANT_TD AND  (NIVEAU_ETU ,FILIERE_ETU)  = (SELECT etu1.NIVEAU_ETU ,etu1.FILIERE_ETU FROM ETUDIANT etu1 , GROUPETD gp WHERE gp.IDGROUPE = :NEW.IDGROUPE AND etu1.IDETUDIANT = gp.ID_ETUDIANT_TD  FETCH NEXT 1 ROW ONLY  )  ; 
+
+-- prq pas EXIST : exist continue tant que pas vrai <=> il exist au moins 1 
+-- prq pas double not exist : car calcule toute la table or par invariant la table doit toujours contenir meme niveau donc inutile
+-- prq row only car on dit pick 1 ligne et regarde si c'est vrai sinon rejette transaction  : sale et peut conventionnel mais exactement ce que l'on veut et donc permet de ne pas calculer sur tout en cas d'echec cf exist
+
+IF (vrai != 1) THEN
+	RAISE_APPLICATION_ERROR(-20500,'Le niveau de l''etudiant doit correspondre au niveau du groupe');
+END IF ;
+END;
+/ 
+-- REMARQUE : si l'on veut vraiment unitaire alors il faudrait split validate etu en niveau et filiere validation mais un etudiant valide est une conjonction de clause donc si l'on l'écrit ent 2 test en plus des pb pratique ce n'est pas coherent car on doit lier intelectuellement les 2 => 2 trigger concernant le meme objet de test => propriete etu = conjonction 
+
+
+
+
+
+prompt "ENSEIGNTD"
+
+
+CREATE TABLE MATIERE (
+	IDMATIERE NUMERIC(6,0),
+	INTITULE VARCHAR(16),
+	PROGRAMME VARCHAR(255),
+	DESCRIPTION VARCHAR(255),
+	CONSTRAINT PK_MATIERE PRIMARY KEY (IDMATIERE)
+);
+
+prompt "MATIERE"
+
+
+CREATE TABLE COURS (
+	IDCOURS NUMERIC(6,0),
+	ID_MATIERE_C NUMERIC(6,0),
+	CHAPITRE VARCHAR(20),-- NUMERO_CHAPITRE + TITRE_CHAPITRE 
+	TITRE VARCHAR(16), --NUMERO NUMERIC(6,0), -- ON A enleve annee car calculable avec donne cours
+	CONSTRAINT PK_COURS PRIMARY KEY (IDCOURS),
+    	CONSTRAINT FK_MATIERE_COURS FOREIGN KEY (ID_MATIERE_C) REFERENCES MATIERE (IDMATIERE) --ON DELETE CASCADE
+);
+-- MEME SI UNIQUNESS PROFITABLE PAS OBLIGATOIRE
+
+prompt "COURS"
+
+
+CREATE TABLE INSCRIS(
+	ID_ETUDIANT_I NUMERIC(6,0),
+	ID_MATIERE_I NUMERIC(6,0),
+	CONSTRAINT PK_INSCRIS PRIMARY KEY (ID_MATIERE_I, ID_ETUDIANT_I),
+    	CONSTRAINT FK_MATIERE_INSCRIS FOREIGN KEY (ID_MATIERE_I) REFERENCES MATIERE (IDMATIERE), --ON DELETE CASCADE,
+    	CONSTRAINT FK_ETUDIANT_INSCRIS FOREIGN KEY (ID_ETUDIANT_I) REFERENCES ETUDIANT (IDETUDIANT) ON DELETE CASCADE
+);
+
+-- si l'étudiant existe plus plus besoin de savoir ou il a deja etait inscrit 
+
+
+--Reponse : si l'inscription concerne l'année oui mais la elle concerne la matiere , or nous avons besoin de savoir ou a été inscris l'étudiant durant toute la durée de son cursus 
+
+prompt "INSCRIS"
+
+
+
+/*CREATE TABLE SUJET_MATIERE(
+ID_MATIERE NUMERIC(6,0),
+MOTCLEF VARCHAR(16),
+);*/
+
+
+CREATE TABLE DONNECOURS (
+	ID_ENSEIGNANT_DC NUMERIC(6,0),
+	ID_COURS_DC NUMERIC(6,0),
+	DATE_COURS DATE,
+	CONSTRAINT PK_DONNECOURS PRIMARY KEY (ID_COURS_DC, ID_ENSEIGNANT_DC),
+    	CONSTRAINT FK_COURS_DONNECOURS FOREIGN KEY (ID_COURS_DC) REFERENCES COURS (IDCOURS) ,--ON DELETE CASCADE, -- il a quand meme donné le cours même si les ressources ne sont plus dans la dbb 
+    	CONSTRAINT FK_ENSEIGNANT_DONNECOURS FOREIGN KEY (ID_ENSEIGNANT_DC) REFERENCES ENSEIGNANT (IDENSEIGNANT) --ON DELETE CASCADE a debattre , si le prof n'est plus dans la dbb alors ce n'est plus la peine de conserver l'id des  cours qu'il a donné
+);
+
+prompt "DONNECOURS"
+CREATE TABLE FORMATRES(
+	IDFORMATRES NUMERIC(6,0),
+	FORMATRES VARCHAR2(35),
+	CONSTRAINT PK_IDFORMATRES PRIMARY KEY (IDFORMATRES)
+);
+
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (1,'livre_externe');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (2,'diapos_cours');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (3,'note_externe');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (4,'note_cours');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (5,'note_td');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (6,'paper_externe');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (7,'site_externe');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (8,'site_cours');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (9,'exercice_td');
+INSERT INTO FORMATRES(IDFORMATRES , FORMATRES ) VALUES (10,'exercice_externe');
+
+
+
+
+
+CREATE TABLE RESSOURCE (
+	IDRESSOURCE NUMERIC(6,0),
+	ID_AUTEUR_R NUMERIC(6,0), --ID_ENSEIGNANT
+	FILENAME VARCHAR(50), 
+	TAILLE NUMERIC(16) CHECK (TAILLE < 3000000 ),  --MAX_TAILLE_RESSOURCE  marche pas 
+	NOMBREPAGE NUMERIC(5),
+	DESCRIPTION VARCHAR(100),
+	TITRE VARCHAR(25),
+	MODIFIEDAT DATE,
+	CREATEAT DATE ,	
+	ID_FORMATRES_R NUMERIC(6,0),--ENUM ('Livre','video','site','diapos','cours_univ'),
+	CONSTRAINT PK_RESSOURCE PRIMARY KEY (IDRESSOURCE),--,ID_COURS_R),
+	CONSTRAINT FK_FORMATRES_RESSOURCE FOREIGN KEY (ID_FORMATRES_R) REFERENCES FORMATRES(IDFORMATRES) ON DELETE CASCADE,
+    	CONSTRAINT FK_AUTEUR_RESSOURCE FOREIGN KEY (ID_AUTEUR_R) REFERENCES ENSEIGNANT(IDENSEIGNANT) --ON DELETE CASCADE
+);
+prompt "RESSOURCE"
+--prompt "DEBUG"
+
+/*
+CREATE OR REPLACE PACKAGE  my_package IS 
+MAX_TAILLE_R NUMBER :=30000;
+END;
+/
+
+CREATE OR REPLACE FUNCTION  MAX_TAILLE_RESSOURCE 
+RETURN NUMBER -- pas boolean car sinon pas comparaison where clause 
+IS
+BEGIN
+return 30000;
+END;
+/
+
+CREATE OR REPLACE TRIGGER validate_taille 
+BEFORE INSERT ON RESSOURCE  
+FOR EACH ROW  
+BEGIN
+IF :NEW.TAILLE > 80000 THEN 
+	RAISE_APPLICATION_ERROR(-20500,'Les ressources ne doivent pas dépassé 80 000 Ko ');	
+END IF ;
+END;
+/ 
+
+*/
+
+
+-- DATE CREATION ET MODIFICATION NE DOIVENT PAS POUVOIR ETRE INSERER MAIS CACULE , de toute maniere le trigger over write la valeur 
+-- pb on get la date apres insertion or ca prend du temps si une transaction se glisse entre l'insertion et le trigger : si possible ? 
+
+CREATE OR REPLACE TRIGGER update_modif
+AFTER INSERT OR UPDATE ON RESSOURCE
+FOR EACH ROW 
+BEGIN 
+IF INSERTING THEN
+	
+	UPDATE RESSOURCE SET CREATEAT = SYSDATE , MODIFIEDAT= SYSDATE  WHERE IDRESSOURCE =:NEW.IDRESSOURCE;
+
+ELSIF UPDATING THEN
+	UPDATE RESSOURCE SET MODIFIEDAT= SYSDATE WHERE IDRESSOURCE =:NEW.IDRESSOURCE;
+
+END IF ;
+
+END;
+/
+
+
+
+
+prompt "RESSOURCE"
+
+
+CREATE TABLE RESSOURCECOURS (
+	ID_COURS_RC NUMERIC(6,0),
+	ID_RESSOURCE_RC NUMERIC(6,0),
+	CONSTRAINT PK_RESSOURCECOURS PRIMARY KEY (ID_COURS_RC, ID_RESSOURCE_RC),
+    	CONSTRAINT FK_COURS_RESSOURCECOURS FOREIGN KEY (ID_COURS_RC) REFERENCES COURS (IDCOURS), --ON DELETE CASCADE on veut garder le lien entre les ressources et le cours meme si le cours existe plus car les ressources pourront être réutilisés et donc il est mieux de garder cette "indexage" cours:ressource  ajout un sens , mot clef pour recherche contextuelle
+    	CONSTRAINT FK_RESSOURCE_RESSOURCECOURS FOREIGN KEY (ID_RESSOURCE_RC) REFERENCES RESSOURCE (IDRESSOURCE) -- ON DELETE CASCADE  la pourquoi pas , comme ressource existe plus 
+);
+
+prompt "RESSOURCECOURS"
+
+CREATE TABLE AUDIT_RC(
+	ID NUMBER GENERATED  by default on null as IDENTITY,
+	ID_COURSRC_ARC NUMERIC(6,0),
+	ID_RESSOURCE_ARC NUMERIC(6,0),
+	USERNAME VARCHAR(20), -- PAS FORCEMENT L'AUTEUR QUI POST LA RESSOURCE
+	OPERATION VARCHAR(16),
+	TIMESTAMPE DATE
+);
+
+	
+CREATE OR REPLACE TRIGGER  insert_audit_R
+AFTER INSERT OR DELETE OR UPDATE  ON RESSOURCECOURS
+FOR EACH ROW
+BEGIN
+	IF INSERTING THEN
+	INSERT INTO AUDIT_RC ( ID_COURSRC_ARC ,ID_RESSOURCE_ARC  , USERNAME ,OPERATION ,TIMESTAMPE ) VALUES (:NEW.ID_COURS_RC,:NEW.ID_RESSOURCE_RC,USER,'INSERT',SYSDATE);
+	
+	ELSIF UPDATING THEN -- A VOIR  
+	INSERT INTO AUDIT_RC( ID_COURSRC_ARC,ID_RESSOURCE_ARC  , USERNAME ,OPERATION ,TIMESTAMPE ) VALUES (:NEW.ID_COURS_RC,:NEW.ID_RESSOURCE_RC,USER,'UPDATE',SYSDATE);
+	
+	
+	ELSIF DELETING THEN
+	INSERT INTO AUDIT_RC ( ID_COURSRC_ARC,ID_RESSOURCE_ARC , USERNAME ,OPERATION ,TIMESTAMPE ) VALUES (:NEW.ID_COURS_RC,:NEW.ID_RESSOURCE_RC,USER,'DELETE',SYSDATE);
+	END IF;
+END;
+/
+
+
+
+
+CREATE TABLE BIBLIOGRAPHIE (
+	ID_RESSOURCEP_B NUMERIC(6,0),
+	ID_RESSOURCEF_B NUMERIC(6,0),
+	CONSTRAINT PK_BIBLIOGRAPHIE PRIMARY KEY (ID_RESSOURCEP_B, ID_RESSOURCEF_B),
+    	CONSTRAINT FK_RESSOURCEP_BIBLIOGRAPHIE FOREIGN KEY (ID_RESSOURCEP_B) REFERENCES RESSOURCE (IDRESSOURCE), --ON DELETE CASCADE,-- pourquoi pas mais encore une fois aide indexage/historique 
+    	CONSTRAINT FK_RESSOURCEF_BIBLIOGRAPHIE FOREIGN KEY (ID_RESSOURCEF_B) REFERENCES RESSOURCE (IDRESSOURCE)-- ON DELETE CASCADE	
+);
+
+--prompt"DEBUG"
+
+
+CREATE OR REPLACE TRIGGER auto_extendContexte
+AFTER INSERT ON BIBLIOGRAPHIE 
+FOR EACH ROW 
+DECLARE 
+	idcours RESSOURCECOURS.ID_COURS_RC%TYPE;
+BEGIN
+SELECT ID_COURS_RC INTO idcours FROM RESSOURCECOURS WHERE ID_RESSOURCE_RC=:NEW.ID_RESSOURCEP_B;
+INSERT INTO RESSOURCECOURS( ID_COURS_RC,ID_RESSOURCE_RC) VALUES (idcours,:NEW.ID_RESSOURCEF_B);
+
+END;
+/ 
+
+prompt "BIBLIOGRAPHIE"
+
+
+
+
+
+CREATE TABLE THREADMATIERE(
+	ID_MATIERE_TM NUMERIC(6,0),
+	IDTHREAD NUMERIC(6,0),
+	TITRE VARCHAR(16),
+	ID_ADMIN_TM NUMERIC(6,0),
+	CONSTRAINT PK_THREADMATIERE PRIMARY KEY (IDTHREAD),
+    	CONSTRAINT FK_ADMIN_THREADMATIERE FOREIGN KEY (ID_ADMIN_TM) REFERENCES ETUDIANT (IDETUDIANT),-- ON DELETE CASCADE, ON A FAIT LE TRIGGER LE PERMETTANT
+    	CONSTRAINT FK_MATIERE_THREADMATIERE FOREIGN KEY (ID_MATIERE_TM) REFERENCES MATIERE (IDMATIERE) -- ON DELETE CASCADE POUR INDEXATION 
+);
+CREATE OR REPLACE TRIGGER verify_suivie
+BEFORE INSERT ON  THREADMATIERE
+FOR EACH ROW 
+
+DECLARE 
+ vrai NUMBER;
+BEGIN
+SELECT 1 INTO vrai FROM DUAL WHERE EXISTS( SELECT 1 FROM INSCRIS WHERE :NEW.ID_ADMIN_TM = ID_ETUDIANT_I AND INSCRIS.ID_MATIERE_I=:NEW.ID_MATIERE_TM );
+
+	IF  vrai != 1 THEN 
+		RAISE_APPLICATION_ERROR(-20500,'La matiere  d'' thread doit correspondre à une UE suivie par l''etudiant ');
+	END IF ;
+
+END;
+/ 
+
+
+--prompt"DEBUG"
+
+
+CREATE TABLE AUDIT_THREADMAT(
+	ID NUMBER GENERATED  by default on null as IDENTITY,
+	THREAD_ATH NUMERIC(6,0),
+	ADMIN_ATH NUMERIC(6,0),
+	MATIERE_ATH NUMERIC(6,0),
+	TITRE_TM VARCHAR(16),
+	USERNAME VARCHAR(20),
+	OPERATION VARCHAR(16),
+	TIMESTAMPE DATE
+);
+
+
+
+CREATE OR REPLACE TRIGGER audit_THREADMAT
+AFTER INSERT OR DELETE  ON THREADMATIERE
+FOR EACH ROW 
+--DECLARE t_matiere MATIERE.INTITULE%TYPE; -- IF TITRE IS NULL THEN USERID || \ || TITLE_MATIERE (DEFAULT)   
+BEGIN 
+
+IF INSERTING THEN 
+	--SELECT INTITULE INTO t_matiere FROM MATIERE WHERE IDMATIERE=:NEW.ID_MATIERE_TM AND   ;
+	INSERT INTO AUDIT_THREADMAT( THREAD_ATH,ADMIN_ATH,MATIERE_ATH,TITRE_TM,USERNAME,OPERATION,TIMESTAMPE) VALUES 	(:NEW.IDTHREAD,:NEW.ID_ADMIN_TM,:NEW.ID_MATIERE_TM,:NEW.TITRE,USER,'INSERT',SYSDATE);
+	--NOUVEAU THREAD de ADMIN POUR LA MATIERE : _matiere 
+END IF;
+IF DELETING THEN 
+	INSERT INTO AUDIT_THREADMAT( THREAD_ATH,ADMIN_ATH,MATIERE_ATH,TITRE_TM,USERNAME,OPERATION,TIMESTAMPE) VALUES 	(:OLD.IDTHREAD,:OLD.ID_ADMIN_TM,:OLD.ID_MATIERE_TM,:OLD.TITRE,USER,'UPDATE',SYSDATE);
+END IF;
+END;
+/
+
+
+
+
+
+CREATE TABLE CONTRIBUETHREAD(
+	ID_THREAD_CT NUMERIC(6,0),
+	ID_AUTEUR_CT NUMERIC(6,0),
+	CONSTRAINT PK_CONTRIBUETHREAD PRIMARY KEY (ID_THREAD_CT,ID_AUTEUR_CT),
+    	CONSTRAINT FK_AUTEUR_CONTRIBUETHREAD FOREIGN KEY (ID_AUTEUR_CT) REFERENCES ETUDIANT (IDETUDIANT),--ON DELETE CASCADE, TODO FAIRE LE TRIGGER COMME AU DESSUS : POUR ASSIGNER LES NOTES A UN AUTRE AUTEUR AUTOMATIQUEMENT 
+    	CONSTRAINT FK_THREAD_CONTRIBUETHREAD FOREIGN KEY (ID_THREAD_CT) REFERENCES THREADMATIERE (IDTHREAD) ON DELETE CASCADE
+);
+
+CREATE OR REPLACE FUNCTION isAdminOfThread (id_etu IN NUMBER , id_thread IN NUMBER   )
+RETURN NUMBER -- pas boolean car sinon pas comparaison where clause 
+IS
+tmp NUMBER;
+BEGIN
+SELECT COUNT(*)  INTO tmp FROM THREADMATIERE TM2 WHERE  TM2.ID_ADMIN_TM=id_etu AND TM2.IDTHREAD= id_thread; -- le reste ne marche pas 
+return tmp ;
+END;
+/
+
+-- SI UN ADMIN EST SUPPRIMER UN ADMIN EST ASSIGNE AU HASARD POUR LE THREAD ON POURRAIT ASSIGNER LE PREMIER DU ORDER BY COUNT(NOTE) : LE PLUS ACTIF DU THREAD   
+CREATE OR REPLACE TRIGGER donne_lead 
+AFTER DELETE ON ETUDIANT
+FOR EACH ROW 
+BEGIN
+UPDATE THREADMATIERE
+SET THREADMATIERE.ID_ADMIN_TM = ( SELECT ID_AUTEUR_CT FROM  CONTRIBUETHREAD ORDER BY DBMS_RANDOM.VALUE FETCH NEXT 1 ROW ONLY) --no need sample , echantillon taille faible  :CT.IDETUDIANT 
+WHERE  isAdminOfThread (:OLD.IDETUDIANT, THREADMATIERE.IDTHREAD ) > 0 ; -- ON PEUT PAS FAIRE AUTREMENT 
+END;
+/
+
+-- idee rqt 
+-- selec top contrib by thread 
+
+
+prompt "THREADMATIERE"
+
+
+
+CREATE OR REPLACE TRIGGER auto_adminContribue
+AFTER INSERT ON THREADMATIERE
+FOR EACH ROW 
+BEGIN
+INSERT INTO CONTRIBUETHREAD ( ID_THREAD_CT,ID_AUTEUR_CT) VALUES (:NEW.IDTHREAD,:NEW.ID_ADMIN_TM);
+
+END;
+/ 
+
+
+
+
+
+
+
+--prompt"DEBUG"
+
+
+CREATE OR REPLACE TRIGGER request_joinThread
+BEFORE INSERT ON CONTRIBUETHREAD  
+FOR EACH ROW 
+BEGIN
+IF isAdminOfThread(:NEW.ID_AUTEUR_CT,:NEW.ID_THREAD_CT) = 0 THEN 
+
+	RAISE_APPLICATION_ERROR(-20500,'Pour joindre le thread vous devez avoir la permission de son createur ');	
+END IF ;
+END;
+/ 
+
+
+CREATE OR REPLACE TRIGGER request_deleteThread
+BEFORE DELETE ON CONTRIBUETHREAD  
+FOR EACH ROW 
+BEGIN
+IF isAdminOfThread(:NEW.ID_AUTEUR_CT,:NEW.ID_THREAD_CT) = 0 THEN 
+	
+	RAISE_APPLICATION_ERROR(-20500,'Pour supprimer le thread vous devez être son createur ');
+	--ENVOIE MESSAGE all CONTRIBUTEUR 	
+END IF ;
+END;
+
+
+/ 
+
+
+CREATE TABLE NOTE (
+	IDNOTE NUMERIC(6,0),
+	ID_RESSOURCE_N NUMERIC(6,0),
+	FILENAME VARCHAR(50),
+	ID_THREADMATIERE_N NUMERIC(6,0),
+	ID_AUTEUR_N NUMERIC(6,0),
+	CONSTRAINT PK_IDNOTE PRIMARY KEY (IDNOTE),
+    	CONSTRAINT FK_RESSOURCE_NOTE FOREIGN KEY (ID_RESSOURCE_N) REFERENCES RESSOURCE (IDRESSOURCE),-- ON DELETE CASCADE, NON JUSTE NOTIFICATION USER LORS SUPPRESION FICHIER ET SI N'ACCEPTE PAS ("VOULEZ VOUS SUPPRIMER LES NOTES ASSOCIES") ALORS LES NOTES ENTRAINERONT : ERREUR IMPOSSIBLE TROUVER FICHIER 
+    	CONSTRAINT FK_AUTEUR_NOTE FOREIGN KEY (ID_AUTEUR_N) REFERENCES ETUDIANT (IDETUDIANT) , -- DEJA REATTRIBUTION AUTO , PUIS SI PLUS DE CONTRIBUTEUR DANS THREAD ALORS SUPPRIME ON DELETE CASCADE,
+    	CONSTRAINT FK_THREADMATIERE_NOTE FOREIGN KEY (ID_THREADMATIERE_N) REFERENCES THREADMATIERE (IDTHREAD) ON DELETE CASCADE --OUI CAR SI ON SUPPRIME DEPOT ALORS TOUS DANS DEPOT SUPPR
+);
+
+
+
+	
+CREATE OR REPLACE TRIGGER verify_matiere
+BEFORE INSERT ON NOTE
+FOR EACH ROW 
+DECLARE 
+	vrai NUMBER ;
+BEGIN 
+SELECT COUNT(*) INTO vrai FROM RESSOURCECOURS rc,COURS c1 , THREADMATIERE  tm WHERE rc.ID_RESSOURCE_RC=:NEW.ID_RESSOURCE_N AND c1.IDCOURS= rc.ID_COURS_RC AND  c1.ID_MATIERE_C  = tm.ID_MATIERE_TM    AND tm.IDTHREAD=:NEW.ID_THREADMATIERE_N ; 
+
+IF vrai = 0 THEN 
+	RAISE_APPLICATION_ERROR(-20500,'Toutes les notes d''un thread doivent concernés les ressources dans la matiere de ce thread   ');
+END IF ;
+
+END;
+/ 
+
+
+--prompt("DEBUG")
+CREATE OR REPLACE FUNCTION isContributeurOf (id_etu IN NUMBER , id_thread IN NUMBER   )
+RETURN NUMBER -- pas boolean car sinon pas comparaison where clause 
+IS
+tmp NUMBER;
+BEGIN
+SELECT COUNT(*)  INTO tmp FROM CONTRIBUETHREAD CT2 WHERE  CT2.ID_AUTEUR_CT = id_etu AND CT2.ID_THREAD_CT = id_thread; -- le reste ne marche pas 
+return tmp ;
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER request_addnote
+BEFORE INSERT OR UPDATE  ON NOTE
+FOR EACH ROW 
+BEGIN
+
+
+	IF  isAdminOfThread(:NEW.ID_AUTEUR_N , :NEW.ID_THREADMATIERE_N) = 0 OR isContributeurOf(:NEW.ID_AUTEUR_N , :NEW.ID_THREADMATIERE_N) = 0  THEN -- si l'auteur qui ajoute la note est parmis les contributeur du thread 
+		RAISE_APPLICATION_ERROR(-20500,'Pour ajouter/modifier une note dans le thread vous devez avoir la permission de son createur ');	
+	END IF ;
+END;
+/ 
+
+
+CREATE OR REPLACE TRIGGER request_updateOrdeletenote -- split update et delete en 2 triggers 
+BEFORE DELETE  ON NOTE  
+FOR EACH ROW
+BEGIN
+IF :NEW.ID_AUTEUR_N != :OLD.ID_AUTEUR_N OR  isAdminOfThread(:NEW.ID_AUTEUR_N , :NEW.ID_THREADMATIERE_N) = 0 THEN 
+	IF DELETING THEN
+		RAISE_APPLICATION_ERROR(-20500,'Pour supprimer une note dans le thread vous devez avoir la permission de son auteur ou être l''admin du thread ');	
+	END IF;
+END IF ;
+
+END;
+/ 
+
+CREATE TABLE AUDIT_NOTE(
+	ID NUMBER GENERATED  by default on null as IDENTITY,
+	IDNOTE_ANT NUMERIC(6,0),
+	RESSOURCE_ANT NUMERIC(6,0),
+	FILENAME_NT VARCHAR(20),
+	THREAD_ANT NUMERIC(6,0),
+	AUTEUR_ANT NUMERIC(6,0),
+	USERNAME VARCHAR(20),
+	OPERATION VARCHAR(16),
+	TIMESTAMPE DATE
+);
+
+
+	
+CREATE OR REPLACE TRIGGER AUDIT_NOTE
+AFTER INSERT OR DELETE OR UPDATE  ON NOTE
+FOR EACH ROW
+BEGIN
+	IF INSERTING THEN
+	INSERT INTO AUDIT_NOTE ( IDNOTE_ANT,RESSOURCE_ANT,FILENAME_NT,THREAD_ANT,AUTEUR_ANT ,USERNAME ,OPERATION,TIMESTAMPE ) VALUES (:NEW.IDNOTE,:NEW.ID_RESSOURCE_N,:NEW.FILENAME,:NEW.ID_THREADMATIERE_N,:NEW.ID_AUTEUR_N,USER,'INSERT',SYSDATE);
+	DBMS_OUTPUT.PUT_LINE('hij');
+	ELSIF UPDATING THEN -- A VOIR  
+	INSERT INTO AUDIT_NOTE ( IDNOTE_ANT,RESSOURCE_ANT,FILENAME_NT,THREAD_ANT,AUTEUR_ANT ,USERNAME ,OPERATION,TIMESTAMPE ) VALUES (:NEW.IDNOTE,:NEW.ID_RESSOURCE_N,:NEW.FILENAME,:NEW.ID_THREADMATIERE_N,:NEW.ID_AUTEUR_N,USER,'UPDATING',SYSDATE);
+	
+	
+	ELSIF DELETING THEN
+	INSERT INTO AUDIT_NOTE ( IDNOTE_ANT,RESSOURCE_ANT,FILENAME_NT,THREAD_ANT,AUTEUR_ANT ,USERNAME ,OPERATION,TIMESTAMPE ) VALUES (:OLD.IDNOTE,:OLD.ID_RESSOURCE_N,:OLD.FILENAME,:OLD.ID_THREADMATIERE_N,:OLD.ID_AUTEUR_N,USER,'DELETE',SYSDATE);
+	
+	END IF;
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER validate_formatNote
+BEFORE INSERT ON RESSOURCE  
+FOR EACH ROW 
+DECLARE 
+	extension_note VARCHAR(10);
+	extension_ressource VARCHAR(10);
+BEGIN
+--extension_note := SUBSTRING_INDEX(:NEW.FILENAME_N,'.',-1);
+--select substr(regexp_substr(:NEW.FILENAME_N,'\.[^\.]*$'),2) INTO extension_note FROM DUAL;
+/*extension_ressource := (SELECT SUBSTRING_INDEX(FILENAME_R,'.',-1) FROM RESSOURCE WHERE IDRESSOURCE= NEW.ID_RESSOURCE_N);
+IF extension_ressource == 'pdf' AND (extension_note != 'xfdf' OR extension_note != 'fdf')  THEN 
+	RAISE_APPLICATION_ERROR(-20500,"Les notes (Adobe acrobat) concernant des ressources pdf doivent avoir l'' extension xfdf ou fdf  ");	
+END IF ;*/
+DBMS_OUTPUT.PUT_LINE('hij');
+END;
+/ 
+--INSERT INTO RESSOURCE VALUES (15,17,'kgjk.pdf',1524,12,'balbla','titre',NULL,NULL,'video');
+
+prompt "NOTE"
+
+
+
+CREATE TABLE MOTCLEF (
+	MOT VARCHAR(16),
+	NB_OCCURENCE NUMERIC(10),
+	CONSTRAINT PK_MOTCLEF PRIMARY KEY (MOT)
+);
+
+prompt "MOTCLEF"
+
+--STUPIDE :
+
+CREATE TABLE CARACTERISE (
+	ID_RESSOURCE_CAT NUMERIC(6,0),
+	MOT_CAT VARCHAR(16),
+	CONSTRAINT PK_CARACTERISE PRIMARY KEY (ID_RESSOURCE_CAT,MOT_CAT),
+    	CONSTRAINT FK_RESSOURCE_CARACTERISE FOREIGN KEY (ID_RESSOURCE_CAT) REFERENCES RESSOURCE (IDRESSOURCE), --NON MAIS A DEBATTRE CAR PUREMENT HISTORIQUE , FAUDRAIT CLEAN REGULIEREMENT ON DELETE CASCADE,
+    	CONSTRAINT FK_MOT_CARACTERISE FOREIGN KEY (MOT_CAT) REFERENCES MOTCLEF (MOT) -- SUPPRIMER DES MOTS (?INJURES) , WTF ? ON DEVRAIT PAS POUVOIR SUPPRIMER DES MOTS ON DELETE CASCADE
+);
+
+/*CREATE VIEW top_word AS
+SELECT MOT
+FROM CARACTERISE , MOTCLEF,
+WHERE condition;
+*/
+
+/*CREATE VIEW : afficher tous les mots clefs par occurence croissante associer à un contexte/ensemble_ressource/cours  
+: utilisation voir les mots clefs associer au ressource d'un thread */
+
+prompt "CARACTERISE"
+
+
+
+

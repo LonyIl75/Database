@@ -1,0 +1,211 @@
+Actuellement l'incroyable diversité des ressources présente sur le net peuvent être un fardot alors qu'elles pourraient être d'une aide précieuse pour la compréhension des cours. 
+Notre solution est un environement universitaire permettant de faire des recherches contextuelles sur internet .
+
+ Pour son bon fonctionnement nous allons avoir besoin de plusieurs acteurs:
+	- les responsables d'enseignements qui seront chargés d'instancier les contextes des UEs , puis
+	- les enseignants qui enrichieront ce contexte avec leur cours et leur recommendations bibliographique et finalement,
+	 -les étudiants qui annoteront ces ressources . 
+
+Cela dit pour atteindre l'ultime version de ce projet nous avons besoin d'une période d'observation de 3 mois pour étudier le comportement des étudiants sur la plateforme et apporter des corrections à notre modèle . 
+
+Espace des Enseignants :
+
+Nous trouvons dans cette partie 3 tables majeures :
+	- Enseignant : les enseignants de l'université 
+	- Cours : les cours d'une Matière
+	- Ressource : les ressources sotckées dans le contexte 
+
+Entites:
+
+	Enseignant(__idEnseignant__,nom,prenom,departement)
+	Cours(__idCours__,**id_matiere**,**id_ressource**,chapitre,titre,annee)
+	Ressource(__idRessource__,**id_auteur**,filename,sizeFile,pageNumber,description,title,modifiedAt,createdAt,formatType)
+
+Associations:
+	
+	DonneCours(__**id_enseignant_dc**__,__**id_cours_dc**__,dateCours)
+	RessourceCours(__**id_cours_rc**__,__**id_ressource_rc**__)
+	
+
+Espace des Etudiants:
+
+Nous trouvons dans cette partie 2 tables majeures :
+
+	- Etudiant : les etudiants de l'université
+	- Note : les annotations d'un Thread   
+
+Entites :
+	Etudiant(__idEtudiant__,nom,prenom,filliere,niveau) # niveau e ( 'L1', 'L2' , ... ) 
+	Note (__idNote__,**id_thread**,**id_ressource**,filename,createAt,modifiedAt)
+
+
+Nous venons à la partie la plus importante le contexte ,il s'exprime par des relations entre des personne , entre des ressources ou entre des personnes  et des ressources 
+
+Soit les entites Matiere & Thread :
+
+	Matiere(__idMatiere__,intitule,programme,description) # communément on appelle l'id de la matiere le code de l'UE
+	Thread(__idThread__,**id_Matiere**,**id_admin**,titre)
+	
+Associations :
+
+	RR:
+	Caracterise(__**id_ressource**__,__**mot**__) #un mot est une ressource atomique : Mot(__mot__) 
+	Bibliographie(__**id_ressourceP**__,__**id_ressourceR**__) 
+	RessourceCours(__**id_ressource**__,__**id_cours**__)
+	
+	PR
+	Inscris ( __**id_etudiant**__, __**id_matiere**__) 
+	DonneCours (__**id_enseignant**__,__**id_cours**__)
+	ContribueThread(__**id_auteur**__,__**id_thread**__)
+
+
+	GroupeTD (__**id_enseignant**__,__**id_etudiant**__,__**id_matiere**__,nomGroupe)
+	
+
+
+	L'interpretation d'un chapitre du programme par un groupe d'enseignant est un cours,  
+	* L'interpretation d'une Matiere par un groupe d'enseignant est un ensemble de cours ,
+
+	L'interpretation d'un cours par un groupe d'étudiant est une note ,
+	* L'interpretation des cours d'une Matiere par un groupe d'étudiant est un ensemble de note : un thread .
+
+Exemple d'utilisation: (très inspiré de git)
+
+	Un étudiant créer un Thread personnel à partir du dépôt publique de HLIN506 , il commence à annoter les ressources qui s'y trouvent mais tombe sur un mot qu'il a du mal à comprendre :
+
+	Solution:
+
+		SELECT idRessource,filename FROM ressource r,caracterise c ,ressourceCours rc ,cours WHERE 
+ 		rc.id_cours=cours.idCours AND cours.id_matiere="HLIN506" 
+ 		AND c.id_ressource=r.idRessource AND c.mot="mot_inconnue"
+		AND rc.id_ressource=r.idRessource 
+		ORDER BY DESC(annee) ;
+
+D'abord nous restreignons l'étendu de la recherche à un contexte particulier : "HLIN506" 
+puis nous y cherchons une expression :"mot_inconnue"
+enfin nous retournons l'ensemble des resultat par ordre d'interet decroissant sur un ensemble de 1 à n attribut : annee
+
+
+	Le lendemain il souhaite vérifier qu'il a bien appris la signification des mots/idées importantes de sont cours . C'est ici que le travaille d'annotations des étudiants va être utile , le système va collecter les X premiers mots appartenant aux ressource d'un cours les plus surligner  par un étudiant  . Ensuite il va vérifier que ce nombre est supérieur à N ou à N/prevalence du mot si ce mot caracterise une des ressources du cours . 
+	
+	Solution:
+		
+	
+
+		note_cours = SELECT idNote FROM note , ressource , ressourceCours , cours WHERE note.id_ressource=idRessource AND ressourceCours.id_ressource=idRessource 		AND idCours=$idCoursHier;
+		
+
+		
+		SELECT COALESCE (tw.mot,my_tw.mot) FROM  
+		(SELECT mot FROM hightlight hg , note , cours ,ressourceCours rc WHERE idNote=hg.id_note AND note.id_ressource=idRessource AND rc.id_ressource= idRessource 		AND rc.id_cours=$idCoursHier )  ORDER BY count FETCH FIRST 10 ROWS ONLY ) 
+		FULL JOIN (SELECT mot ,count FROM hightlight hg WHERE EXIST(SELECT 1 FROM note_cours nm WHERE hg.id_note = nm.idNote) ORDER BY hg.count FETCH FIRST 10 		ROWS ONLY)    
+		) tw ON  my_tw.mot = tw.mot
+		GROUP BY COALESCE (tw.mot,my_tw.mot)
+		HAVING SUM( COALESCE (my_tw.mot)) > 0 OR sum( COALESCE(tw.count,0))  * (SELECT $prior FROM caracterise WHERE id_ressource=idRessource AND 		idCours=$idCoursHier)) > $min_occurence ;
+
+
+Réglement:
+	
+	- Un étudiant ne peut ajouter une ressource personnelle qui ne soit pas une note à la copie d'un repertoire publique universitaire 
+	- Un étudiant a le droit de demander à ce qu'une ressource libre d'accés ( sur internet ou sur exlibris) soit déposer sur le repertoire publique universitaire
+	- Seul le gérant d'un depot publique à le droit de  modifier les ressources qui s'y trouvent 
+	- Seul l'administrateur d'un thread à le droit de le supprimer sous délai d'une semaine
+	
+	- Une ressource se doit d'être en format pdf et ne pas dépasser une certaine taille
+	- Une note se doit d'être en format xfdf ou fdf 
+	- Chaque dépôt est sujet à des limitations de taille
+
+
+
+	
+
+	- Un etudiant ne peut être contributeur d'un thread concernant une matière où il n'est pas lui meme inscris
+	- Un etudiant doit avoir la permission de l'administrateur pour pouvoir visualiser et contribuer au thread 
+	- Une note ne peut être supprimer que par son auteur ou l'administrateur TODO: delete not exist audit table ou delete cascade mais concerver date suppression 
+	- Une note peut être modifié par tous les contributeurs du thread de cette note 
+	- Un Thread possède au moins un contributeur (l'administrateur) 
+	- Si l'administrateur d'un thread quitte le thread alors un auteur est choisi par le système (aléatoirement ,quantitativement , qualitativement , democratiquement)
+	
+	- Un etudiant doit figurer parmis la liste des niveaux universitaire L1,L2,...These
+	- Il n'y a pas plus de 30 élèves par groupe
+	( - Le type de ressource doit être parmis : "livre","diapos","univ_cours","note_cours",	.... )
+	( - Une ressource ne peut pas depasser une certaine taille )
+	
+	
+
+Ouverture:
+ 
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	SELECT 
+
+	
+	Un thread est issu d'une matiere , il représente le sens donnée par un groupe d'étudiant aux ressources de cette 	
+	matière , ce sens est porté par un ensemble de note .
+
+	Un thread est un ensemble de note associé à une matière
+	
+	Une note est un ensemble d'annotations textuelles ou graphique associé à une ressource  
+	
+	Un cours est un ensemble de ressources
+	
+	Une ressource est un fichier concernant un enseignement universitaire 
+
+
+
+
+
+
+
+
+
+
+
+SELECT mot FROM 
+		(my_topWord my_tw LEFT JOIN hightlight hg ON my_tw.mot = hg.mot ) lft1
+		FULL JOIN 
+		(
+		(caracterise c LEFT JOIN hightlight hg  ON c.mot = hg.mot) cara
+		FULL JOIN
+		((SELECT mot ,count FROM hightlight ORDER BY count FETCH FIRST 10 ROWS ONLY) lft2 LEFT JOIN hightlight hg ON lft2.mot = hg.mot) tw 
+		ON tw.mot = cara.mot 
+		) rght1 
+		ON rght1.mot = lft1.mot
+		GROUP BY lft1.mot
+		HAVING sum(tw.count+hg.count) > $min_occurence OR EXIST( SELECT 1 FROM my_topWord WHERE my_topWord.mot = hg.mot );
+
+
+
+
+
+
+
+	Un étudiant veut s'assurer d'avoir correctement appris son cours :
+	
+		SELECT mot FROM Note JOIN caracterise ON idMot=id_mot WHERE (SELECT COUNT(id_mot) FROM caracterise ,ressource WHERE id_ressource=idRessource AND id_mot=idMot AND idRessource=$param1 ) > $param2 ;
+
+	
+
+
+
+
+                                                                                                                      

@@ -1,0 +1,33 @@
+Nous sommes heureux de vous présenter la structue de la base de donnée d'une application d'annotation partagé . La recherche sur un sujet d'étude est souvent très pénible mais elle peut être faciliter par l'utilistaion d'une base de donnée de ressource partagé . L'insertion de ressource dans cette architecture oblige l'utilisateur à se placer dans un contexte* créer par un administrateur ( pour l'instant ce contexte est identifier par les codes des UEs enseigner à l'université des sciences de Montpellier) . Chaque utilisateur pourra créer un thread ou fil en francais qu'il "attachera" à différente ressource publique . Chaque utilisateur pourra fusionner ses notes sur une ressource avec les notes d'un autre étudiant .
+En ce qui concerne les fonctionnalités propre au logiciel :
+
+On peut vérifier que les parties des ressources surlesquelles on a travailler couvre le contexte auxquelles elles appartiennent  .
+( En somme on importe un contexte : ressource + notes + mot clef  Rapport couverture : 0%
+Puis en naviguant dans ce contexte et en y rajoutant des ressources + notes on va indiquer à l'algorithme qu'elle branche l'on a explorer et sur lesquelles on a travailler: surligner , annoter , referencer ,ect  ) 
+Rapport couverture : +%
+Une fois le travail achever on peut demander de rédiger un rapport de couverture de notre nouveau contexte et du travail associé avec l'ancien pour savoir ce qu'il nous reste à travailler . A noter notre nouveau contexte créer lui aussi des branches inexplorés donc on pourrait également calculer la couverture de notre travail sur notre contexte actuel . 
+
+
+
+L'interet du pov de l'utilisateur est de partager ses notes (travail collaboratif) , l'interet a long terme pour l'appli est de grâce aux notes des étudiants d'indexés correctement les ressources (contextes) pour optimiser et grandir l'échantillonage de recherche .
+Le prof initialisera un contexte par défaut avec les ressources du cours et quelques articles .
+Chaque étudiant aura un contexte pour chaque matière avec pour chaque contexte des threads associés .
+Les threads peuvent publiques ou privés . Si ils sont publiques chacun peut les importés (avec leur contexte ) dans son environement de travail :
+
+Mon_env:
+Contexte:
+	mon_contexte
+	didier_contexte
+Threads:
+	mes threads
+	didier_thread
+
+On peut égalemment fusionné des Notes 
+	fusionner > choisir_thread >choisir_note
+
+	
+
+*: un contexte est un ensemble de fichier traitant d'un même sujet 
+
+Peut être aussi tracker les sites visités le plus souvent pour un certain sujet par les étudaitns => navigateur imbriqués dans le contexte (book mark + site ref + site um/prof ) 
+Outre le fait d'être une application de note partagé destiné aux étudiants de nombreuses fonctionnalité peuvent servir dans le cadre de tout type de recherche sur un sujet spécifique. 

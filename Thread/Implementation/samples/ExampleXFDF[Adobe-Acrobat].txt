@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xfdf xmlns="http://ns.adobe.com/xfdf/" xml:space="preserve"
+>
+<annots>
+
+
+
+<highlight color="#FF7002" opacity="0.475693" creationdate="D:20211117202633+01'00'" flags="print" date="D:20211117202633+01'00'" name="bd0b62cf-a344-4a1e-bfd9-78e2b9794353" page="0" coords="133.363373,663.402344,184.247925,663.402344,133.363373,651.934937,184.247925,651.934937,187.227020,663.564880,196.267380,663.564880,187.227020,650.450073,196.267380,650.450073,199.506012,663.402344,295.411957,663.402344,199.506012,651.934937,295.411957,651.934937" rect="130.302109,650.040222,298.473206,663.974731" subject="Texte surligné " title="JUJU">
+	<popup flags="print,nozoom,norotate" open="no" page="0" rect="595.276001,549.402344,799.276001,663.402344"/>
+</highlight>
+
+#HIGLITHS 
+<highlight color="#FF7002" opacity="0.475693" creationdate="D:20211117202636+01'00'" flags="print" date="D:20211117202636+01'00'" name="b2888c2c-cb4c-4799-aa8c-7efde4d96e41" page="0" coords="310.252991,450.176178,319.293335,450.176178,310.252991,437.655914,319.293335,437.655914,216.925903,449.123291,306.016357,449.285858,216.925903,437.655914,306.016357,437.655914,321.125977,449.123291,333.980225,449.123291,321.125977,437.655914,333.980225,437.655914,306.255981,447.219971,310.019409,447.219971,306.255981,435.216980,310.019409,435.216980" rect="213.859589,434.841888,337.041443,450.567444" subject="Texte surligné " title="JUJU"
+><popup flags="print,nozoom,norotate" open="no" page="0" rect="595.276001,336.176178,799.276001,450.176178"
+/></highlight>
+
+#NOTES
+<text color="#FCF485" creationdate="D:20211117202637+01'00'" flags="print,nozoom,norotate" date="D:20211117202642+01'00'" name="0f8a21f9-5105-4f84-b1f3-0ccc1953c60d" icon="Comment" page="0" rect="405.849884,519.132690,429.849884,543.132690" subject="Note" title="JUJU">
+
+	<contents-richtext>
+
+		<body xmlns="http://www.w3.org/1999/xhtml" xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/" xfa:APIVersion="Acrobat:21.7.0" xfa:spec="2.0.2">
+			<p dir="ltr">
+				<span dir="ltr" style="font-size:10.2pt;text-align:left;color:#000000;font-weight:normal;font-style:normal">texte test&#xD;</span>
+			</p>
+		</body>
+
+	</contents-richtext>
+
+	<popup flags="print,nozoom,norotate" open="no" page="0" rect="595.276001,429.132690,799.276001,543.132690"/>
+</text>
+
+#FIGURE 
+<square width="2.000000" color="#FF7002" opacity="0.788193" creationdate="D:20211117202647+01'00'" flags="print" date="D:20211117202657+01'00'" name="71e16f7d-3c98-4290-96d7-76a9ed710bf6" page="0" fringe="1.000000,1.000000,1.000000,1.000000" rect="17.918793,632.343384,45.877121,671.301025" subject="Rectangle " title="JUJU">
+	<contents-richtext>
+		<body xmlns="http://www.w3.org/1999/xhtml" xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/" xfa:APIVersion="Acrobat:21.7.0" xfa:spec="2.0.2">
+			<p dir="ltr">
+				<span dir="ltr" style="font-size:10.2pt;text-align:left;color:#000000;font-weight:normal;font-style:normal">figure test</span>
+			</p>
+		</body>
+	</contents-richtext>
+	<popup flags="print,nozoom,norotate" open="yes" page="0" rect="595.276001,556.301025,799.276001,670.301025"/>
+</square>
+
+
+#TEXTE :
+
+<freetext width="0.000000" creationdate="D:20211117202659+01'00'" flags="print" IT="FreeTextTypewriter" date="D:20211117202707+01'00'" name="9edd749d-bd57-46dd-8ece-fe57d0653793" page="0" rect="404.774048,568.786194,468.388062,583.671204" subject="Texte tapé à la machine" title="JUJU"
+>	#BARRE DROITE ADOBE 
+	<contents-richtext
+		><body xmlns="http://www.w3.org/1999/xhtml" xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/" xfa:APIVersion="Acrobat:21.7.0" xfa:spec="2.0.2" 				style="font-size:10.0pt;text-align:left;color:#C4FA72;font-weight:normal;font-style:normal;font-family:Helv;font-stretch:normal"
+		><p dir="ltr"
+		><span style="line-height:14.9pt;color:#C4F972;font-family:Helvetica"
+		>j'écris du texte </span
+		></p
+		></body>
+	</contents-richtext>
+	
+	#PRESENTATION DOCUMENT :
+	<defaultappearance
+	>14.875 TL /Cour 10 Tf</defaultappearance
+	><defaultstyle
+	>font: Helv 10.0pt;font-stretch:Normal; text-align:left; color:#C4FA73 </defaultstyle>
+</freetext>
+
+#FLECHE 
+<line color="#777777" opacity="0.972229" creationdate="D:20211117202710+01'00'" flags="print" interior-color="#FFC09E" IT="LineArrow" start="355.057251,574.387146" end="392.454865,575.707031" head="None" tail="OpenArrow" date="D:20211117202710+01'00'" name="610360c6-2be6-466b-a832-6c1d35356c65" page="0" rect="349.557251,565.364319,396.955475,585.358826" subject="Droite " title="JUJU"
+><popup flags="print,nozoom,norotate" open="no" page="0" rect="595.276001,461.047058,799.276001,575.047089"
+/></line>
+
+
+
+
+</annots>
+
+<f href="../Downloads/TD7 (1).pdf"
+/><ids original="537856FC55D7DD1D66A0F2BB95AE3736" modified="537856FC55D7DD1D66A0F2BB95AE3736"
+/></xfdf
+>

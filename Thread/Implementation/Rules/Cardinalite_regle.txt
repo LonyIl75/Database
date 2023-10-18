@@ -1,0 +1,63 @@
+Un Enseignant appartient à un département
+
+Un Enseignant dispense de 1 à n Cours durant une année
+
+Un Enseignant est l'enseignant de 1 à n Etudiant
+
+
+
+Un Cours est dispensé par 1 à n Enseignants durant une année
+
+Un Cours est suivi par 1 à n Etudiant durant une année.
+
+Un Cours comporte de 1 à n Ressource/fichiers d'étude (ex: feuilles TD ,diapos ,ect )
+
+
+
+
+
+Une Ressource est déposée par un unique Enseignant
+
+Une Ressource appartient à 1 à n Cours
+
+Une Ressource possède de 0 à n références : Bibliographie
+
+Une Ressource est référencée par 0 à n Ressources : Bibliographie
+
+Une Ressource possède de 1 à n Mot clef (thèmes , sujets , vocabulaire ,ect)
+
+Une Ressource peut être l'objet de 1 à n Note
+
+Une Ressource peut être l'objet de 1 à n Thread_etudiant
+
+
+
+
+
+Une Note est écrite par un unique Etudiant
+
+Une Note ne peut concerner qu'une ressource ( bien qu'en pratique elle peut contenir dans son texte une référence: un url vers une autre ressource du contexte )
+
+Une Note appartient à 1 à n Thread ( au moins 1 ! )
+
+
+
+Un Thread peut contenir de 1 à n Notes 
+(ces notes peuvent appartenir à plusieurs étudiants ) => ATTENTION
+
+Un Thread concerne une unique Matiere
+
+Un Thread ne possède qu'un auteur et cet auteur est forcément un étudiant
+
+
+
+Un Etudiant appartient à un groupe de TD , une filière (info , math , ect) et possède un niveau (L1 , L2 ,.. ,M2 ,ect ) .
+
+Un Etudiant suit de 1 à n Cours durant une année
+
+(? check semestre(UE_code)= current_semestre(etudiant) )
+
+Un Etudiant crée de 1 à n Threads ( par défaut chaque Etudiant possède un Thread vide)
+
+Un Etudiant écrit de 0 à n Notes
+
